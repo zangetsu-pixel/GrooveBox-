@@ -43,3 +43,13 @@ Word-by-word lyrics, BPM, tag editing, vault, hearing test and DJ tools are not 
 - [ ] **Playlists:** create, add with "+" in Tracks, tap to play, delete. They store song names and reconnect when you pick the folder again.
 - [ ] **Fonts:** Apple (SF) and Spotify-style stacks, Roboto, Google Sans, Palatino and more, for lyrics and for the whole app. Custom font upload for lyrics.
 - [ ] Coming in 3.2: real crossfade, skip silence, loudness normalization, more quality-of-life.
+
+## Update 3.2 (test checklist)
+- [ ] **One tone:** no more boxes or bars in a different shade. Background, player, bottom bar and mini player are all the same surface, separated by hairlines.
+- [ ] **True black OLED:** pure #000 everywhere in OLED theme.
+- [ ] **Modern controls:** switch toggles in lists, underline tabs, flat rounded buttons, bottom sheet menus.
+- [ ] **Song menu (three dots):** Play next, Add to queue, favorite, add to any playlist, plus size/format/album info.
+- [ ] **Library:** Albums and Artists tabs (grouped from tags), sort Tracks by A-Z, Most played, Newest.
+- [ ] **Fade between tracks** (Settings, Fade slider, 0-12 s). This fades out and in; it is not an overlapping crossfade.
+- [ ] **Skip silence:** skips quiet starts, and moves on when the song ends in silence.
+- [ ] **Loudness normalization:** uses ReplayGain tags (MP3 and FLAC). Files without tags are left as they are.
