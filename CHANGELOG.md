@@ -23,3 +23,12 @@ Cover generator, accent themes, spectrum, .lrc lyrics, karaoke, 10-band EQ, spee
 
 ## Known limits
 Word-by-word lyrics, BPM, tag editing, vault, hearing test and DJ tools are not built yet.
+
+## Update 3 (test checklist)
+- [ ] **Pages like Musicolet:** bottom bar with Player, Queue, Lyrics, Sound, Settings. A mini player bar shows on every page except Player.
+- [ ] **Embedded lyrics:** read from MP3 (USLT synced-less and SYLT synced), FLAC (LYRICS / UNSYNCEDLYRICS / SYNCEDLYRICS tags) and M4A. Synced ones highlight line by line; plain ones show as text. A same-name .lrc file wins over embedded lyrics.
+- [ ] **Lyrics page:** full list, current line highlighted and centered, tap a line to jump to it.
+- [ ] **Lyrics font:** Default, Serif, Mono, Rounded, Handwriting, Bold, or upload your own .ttf/.otf/.woff2 (custom font must be re-added after reopening). Size slider.
+- [ ] **Adaptive background:** glow color fades smoothly when the album art changes. "Glow" slider sets the strength (0 = off).
+- [ ] **Audio fidelity:** sample rate (Auto/44.1/48/96 kHz, applies after reopening), EQ width (Narrow/Normal/Wide), Auto headroom (lowers the preamp to match EQ boosts so nothing clips), Pure mode (bypass EQ, filters and warmth).
+- [ ] Playback uses the "playback" latency mode for steadier audio.
