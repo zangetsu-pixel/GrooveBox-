@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<title>GrooveBox</title>
+<style>
+*{box-sizing:border-box;margin:0}
+body{background:#000;color:#f2f2f2;font:16px system-ui,sans-serif;max-width:560px;margin:auto;padding:max(16px,env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom))}
+h1{font-size:22px;letter-spacing:1px;margin-bottom:12px}
+.card{background:#101010;border:1px solid #222;border-radius:16px;padding:14px;margin-bottom:14px}
+button,.btn{background:#1a1a1a;color:#f2f2f2;border:1px solid #2c2c2c;border-radius:12px;padding:12px 16px;font-size:16px}
+button:active{background:#262626}
+.on{background:#7cf5c8!important;color:#000!important;border-color:#7cf5c8!important}
+#np{font-size:18px;min-height:24px;margin-bottom:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row{display:flex;gap:8px;align-items:center;justify-content:center;margin-top:10px}
+input[type=range]{width:100%;accent-color:#7cf5c8}
+#t{display:flex;justify-content:space-between;color:#8a8a8a;font-size:13px}
+#list{max-height:200px;overflow:auto}
+.it{padding:9px 6px;border-bottom:1px solid #1c1c1c;color:#bbb;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.it.cur{color:#7cf5c8}
+.band{display:grid;grid-template-columns:48px 1fr 44px;gap:8px;align-items:center;margin:6px 0;font-size:14px;color:#aaa}
+.tg{display:flex;flex-wrap:wrap;gap:8px}
+small{color:#777}
+</style></head><body>
+<h1>GROOVEBOX</h1>
+<div class="card">
+ <div id="np">Pick some songs to start</div>
+ <input type="range" id="seek" value="0" min="0" max="1000"><div id="t"><span id="cur">0:00</span><span id="dur">0:00</span></div>
+ <div class="row"><button id="prev">⏮</button><button id="pp" style="padding:12px 28px">▶</button><button id="next">⏭</button></div>
+ <div class="row"><label class="btn" for="f">＋ Add songs</label><input id="f" type="file" accept="audio/*" multiple hidden></div>
+</div>
+<div class="card"><div id="list"><small>Queue is empty</small></div></div>
+<div class="card"><b>Sound</b>
+ <div class="band"><span>Pre</span><input type="range" id="pre" min="-12" max="6" step="0.5" value="0"><span id="pre_v">0</span></div>
+ <div id="eq"></div>
+ <div class="tg" style="margin-top:10px">
+  <button id="mud">Anti-mud</button><button id="sib">Sibilance</button><button id="cf">Crossfeed</button><button id="rs">Reset</button>
+ </div>
+</div>
+<audio id="a" preload="auto"></audio>
+<script>
+const $=s=>document.querySelector(s),a=$('#a');
+const B=[[60,'60'],[230,'230'],[910,'910'],[3600,'3.6k'],[14000,'14k']];
+let q=[],i=-1,ctx,N={},url,S={pre:0,eq:[0,0,0,0,0],mud:0,sib:0,cf:0};
+try{Object.assign(S,JSON.parse(localStorage.getItem('gb')||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem('gb',JSON.stringify(S))}catch(e){}};
+const fmt=s=>isFinite(s)?Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0'):'0:00';
+function init(){
+ if(ctx)return;
+ ctx=new(window.AudioContext||window.webkitAudioContext)();
+ const src=ctx.createMediaElementSource(a);
+ N.pre=ctx.createGain();
+ N.eq=B.map(([f],k)=>{const n=ctx.createBiquadFilter();n.type=k==0?'lowshelf':k==4?'highshelf':'peaking';n.frequency.value=f;n.Q.value=1;return n});
+ N.mud=ctx.createBiquadFilter();N.mud.type='peaking';N.mud.frequency.value=300;N.mud.Q.value=1;
+ N.sib=ctx.createBiquadFilter();N.sib.type='peaking';N.sib.frequency.value=7200;N.sib.Q.value=2;
+ let n=src;[N.pre,...N.eq,N.mud,N.sib].forEach(x=>{n.connect(x);n=x});
+ const sp=ctx.createChannelSplitter(2),mg=ctx.createChannelMerger(2);N.x=[];
+ n.connect(sp);
+ [0,1].forEach(c=>{
+  const d=ctx.createGain();sp.connect(d,c);d.connect(mg,0,c);
+  const lp=ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=700;
+  const dl=ctx.createDelay();dl.delayTime.value=0.0003;
+  const x=ctx.createGain();x.gain.value=0;
+  sp.connect(lp,c);lp.connect(dl);dl.connect(x);x.connect(mg,0,1-c);N.x.push(x);
+ });
+ mg.connect(ctx.destination);
+ apply();
+}
+function apply(){
+ $('#pre_v').textContent=S.pre;$('#pre').value=S.pre;
+ document.querySelectorAll('.eqs').forEach((e,k)=>{e.value=S.eq[k];$('#ev'+k).textContent=S.eq[k]});
+ $('#mud').classList.toggle('on',!!S.mud);$('#sib').classList.toggle('on',!!S.sib);$('#cf').classList.toggle('on',!!S.cf);
+ if(!ctx)return;
+ N.pre.gain.value=Math.pow(10,S.pre/20);
+ N.eq.forEach((n,k)=>n.gain.value=S.eq[k]);
+ N.mud.gain.value=S.mud?-4:0;N.sib.gain.value=S.sib?-3.5:0;
+ N.x.forEach(x=>x.gain.value=S.cf?0.35:0);
+}
+B.forEach(([f,l],k)=>{
+ const d=document.createElement('div');d.className='band';
+ d.innerHTML=`<span>${l}</span><input class="eqs" type="range" min="-12" max="12" step="0.5" value="0"><span id="ev${k}">0</span>`;
+ d.querySelector('input').oninput=e=>{S.eq[k]=+e.target.value;apply();save()};
+ $('#eq').appendChild(d);
+});
+$('#pre').oninput=e=>{S.pre=+e.target.value;apply();save()};
+['mud','sib','cf'].forEach(k=>$('#'+k).onclick=()=>{S[k]=S[k]?0:1;apply();save()});
+$('#rs').onclick=()=>{S={pre:0,eq:[0,0,0,0,0],mud:0,sib:0,cf:0};apply();save()};
+function render(){
+ $('#list').innerHTML=q.length?'':'<small>Queue is empty</small>';
+ q.forEach((f,k)=>{const d=document.createElement('div');d.className='it'+(k==i?' cur':'');d.textContent=f.name.replace(/\.[^.]+$/,'');d.onclick=()=>load(k);$('#list').appendChild(d)});
+}
+function load(k){
+ if(k<0||k>=q.length)return;
+ init();ctx.resume();
+ if(url)URL.revokeObjectURL(url);
+ i=k;url=URL.createObjectURL(q[k]);a.src=url;a.play();
+ const t=q[k].name.replace(/\.[^.]+$/,'');$('#np').textContent=t;render();
+ if('mediaSession' in navigator)navigator.mediaSession.metadata=new MediaMetadata({title:t,artist:'GrooveBox'});
+}
+$('#f').onchange=e=>{const had=q.length;q.push(...e.target.files);render();if(!had&&q.length)load(0);e.target.value=''};
+$('#pp').onclick=()=>{if(i<0){if(q.length)load(0);return}init();ctx.resume();a.paused?a.play():a.pause()};
+$('#next').onclick=()=>load(i+1<q.length?i+1:0);
+$('#prev').onclick=()=>a.currentTime>3?a.currentTime=0:load(i>0?i-1:q.length-1);
+a.onplay=()=>$('#pp').textContent='⏸';a.onpause=()=>$('#pp').textContent='▶';
+a.onended=()=>$('#next').click();
+a.ontimeupdate=()=>{$('#cur').textContent=fmt(a.currentTime);$('#dur').textContent=fmt(a.duration);if(a.duration)$('#seek').value=a.currentTime/a.duration*1000};
+$('#seek').oninput=e=>{if(a.duration)a.currentTime=e.target.value/1000*a.duration};
+if('mediaSession' in navigator){
+ navigator.mediaSession.setActionHandler('play',()=>a.play());
+ navigator.mediaSession.setActionHandler('pause',()=>a.pause());
+ navigator.mediaSession.setActionHandler('nexttrack',()=>$('#next').click());
+ navigator.mediaSession.setActionHandler('previoustrack',()=>$('#prev').click());
+}
+apply();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script></body></html>
