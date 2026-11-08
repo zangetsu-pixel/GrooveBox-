@@ -32,3 +32,14 @@ Word-by-word lyrics, BPM, tag editing, vault, hearing test and DJ tools are not 
 - [ ] **Adaptive background:** glow color fades smoothly when the album art changes. "Glow" slider sets the strength (0 = off).
 - [ ] **Audio fidelity:** sample rate (Auto/44.1/48/96 kHz, applies after reopening), EQ width (Narrow/Normal/Wide), Auto headroom (lowers the preamp to match EQ boosts so nothing clips), Pure mode (bypass EQ, filters and warmth).
 - [ ] Playback uses the "playback" latency mode for steadier audio.
+
+## Update 3.1 (test checklist)
+- [ ] **Smoother:** blur and heavy effects removed, visualizer throttled and paused off-screen, no full-page color animation.
+- [ ] **New look:** Tint (adaptive gradient from the art), OLED, Dim and Light themes in Settings. Flat modern cards, big rounded cover.
+- [ ] **Custom vector icons** everywhere (no emoji). Layout fills the whole screen; bottom bar sits on the bottom edge.
+- [ ] **Track info:** title, artist and album from the file tags show in the player, queue, mini player and lock screen.
+- [ ] **Folder picker** (Player page, "Folder"). Songs are scanned in the background for their tags.
+- [ ] **Library page:** Queue / Tracks / Playlists tabs. Tracks are sorted by title.
+- [ ] **Playlists:** create, add with "+" in Tracks, tap to play, delete. They store song names and reconnect when you pick the folder again.
+- [ ] **Fonts:** Apple (SF) and Spotify-style stacks, Roboto, Google Sans, Palatino and more, for lyrics and for the whole app. Custom font upload for lyrics.
+- [ ] Coming in 3.2: real crossfade, skip silence, loudness normalization, more quality-of-life.
