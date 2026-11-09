@@ -53,3 +53,11 @@ Word-by-word lyrics, BPM, tag editing, vault, hearing test and DJ tools are not 
 - [ ] **Fade between tracks** (Settings, Fade slider, 0-12 s). This fades out and in; it is not an overlapping crossfade.
 - [ ] **Skip silence:** skips quiet starts, and moves on when the song ends in silence.
 - [ ] **Loudness normalization:** uses ReplayGain tags (MP3 and FLAC). Files without tags are left as they are.
+
+## Update 3.5.1 (test checklist)
+- [ ] **New minimal interface:** one flat surface, left-aligned large titles, sentence-case labels, white play button, thin progress bar. No boxes or shaded bars.
+- [ ] **Live equalizer curve:** drag the curve on the Sound page to shape all 31 bands; a live spectrum moves behind it while music plays.
+- [ ] **Compressor** with threshold and ratio you can change while playing.
+- [ ] **Reverb** (amount and room size) and **stereo width** (0 to 200%).
+- [ ] **New app icon** (a single sound curve on pure black).
+- [ ] Accessibility basics: labels on icon buttons, visible keyboard focus, 44 px tap targets, reduced-motion support.
