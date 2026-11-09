@@ -61,3 +61,12 @@ Word-by-word lyrics, BPM, tag editing, vault, hearing test and DJ tools are not 
 - [ ] **Reverb** (amount and room size) and **stereo width** (0 to 200%).
 - [ ] **New app icon** (a single sound curve on pure black).
 - [ ] Accessibility basics: labels on icon buttons, visible keyboard focus, 44 px tap targets, reduced-motion support.
+
+## Update 3.5.2 (test checklist)
+- [ ] **Version number:** Settings, About, should say "Version 3.5.2". If it doesn't, the site is showing old files.
+- [ ] **Liquid glass is back** (Settings, Theme, Glass; the default after this update). Frosted glass cards over a glow from the album art, no blur effect so it stays smooth.
+- [ ] **Player in one glass card** with a glowing cover.
+- [ ] **Error messages:** if a song can't play, a message at the top says why. Tell me what it says.
+- [ ] **Safe mode** (Settings, Audio fidelity): plays songs with no effects at all. Reopen the app after switching it on.
+- [ ] Reverb only runs when its amount is above 0, to save battery and avoid stutter.
+- [ ] Old cached files are cleared automatically when the update installs.
