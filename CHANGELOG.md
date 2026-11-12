@@ -70,3 +70,10 @@ Word-by-word lyrics, BPM, tag editing, vault, hearing test and DJ tools are not 
 - [ ] **Safe mode** (Settings, Audio fidelity): plays songs with no effects at all. Reopen the app after switching it on.
 - [ ] Reverb only runs when its amount is above 0, to save battery and avoid stutter.
 - [ ] Old cached files are cleared automatically when the update installs.
+
+## Update 3.5.3 (test checklist)
+- [ ] **Gradient behind everything.** The big dark rectangle with square corners behind the cards is gone. The glow now runs edge to edge under the whole app.
+- [ ] Cards have clean rounded corners with nothing showing behind them.
+- [ ] **Slider tracks and the on/off switch knobs are visible** (the browser's auto dark mode was recoloring them).
+- [ ] Brighter accent from dark album art, so the EQ curve and switches stand out.
+- [ ] Settings, About says "Version 3.5.3".
