@@ -77,3 +77,12 @@ Word-by-word lyrics, BPM, tag editing, vault, hearing test and DJ tools are not 
 - [ ] **Slider tracks and the on/off switch knobs are visible** (the browser's auto dark mode was recoloring them).
 - [ ] Brighter accent from dark album art, so the EQ curve and switches stand out.
 - [ ] Settings, About says "Version 3.5.3".
+
+## Update 3.6 (Musicolet audio features, test checklist)
+- [ ] **Gapless playback** (Settings, Audio fidelity). The next song is loaded early and starts the instant the current one ends. Test with an album that flows song to song.
+- [ ] **Crossfade** (Settings, Audio fidelity, Crossfade slider, 0 to 12 s). The end of one song overlaps the start of the next. 0 seconds means gapless.
+- [ ] **Output profiles** (Sound, Output profile): Speaker, Headphones, Bluetooth, Car. Each remembers its own equalizer, filters, reverb, width and compressor. Switch by hand; the app can't see which device is connected.
+- [ ] **Remember speed for each song** (Settings, Audio fidelity).
+- [ ] **Sleep timer upgrades** (Library, Queue): fades the volume out over 15 seconds at the end of a timed sleep, plus "End of this song", "After 3 more songs" and "After 5 more songs".
+- [ ] Already there from earlier updates: ReplayGain normalization, reverb, balance, skip silence, 31-band equalizer.
+- [ ] Settings, About says "Version 3.6".

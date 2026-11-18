@@ -93,7 +93,7 @@ body[data-th=glass] #nav,body[data-th=glass] #mini{background:linear-gradient(rg
 <section class="pg" id="p-lib"><div class="ph">Library</div>
 <div class="seg"><button data-lt="queue" class="on">Queue</button><button data-lt="tracks">Tracks</button><button data-lt="albums">Albums</button><button data-lt="artists">Artists</button><button data-lt="lists">Playlists</button></div>
 <div class="card lt on2" id="lt-queue"><div class="row" style="margin:0 0 8px"><button id="fo">Favorites</button><button id="srt">Sort A–Z</button><button id="clr">Clear</button></div><input type="text" id="srch" placeholder="Search queue" style="width:100%"><div id="list"></div>
-<div class="row"><span>Sleep</span><select id="slp"><option value="0">Off</option><option value="15">15 min</option><option value="30">30 min</option><option value="60">60 min</option></select><small id="slpt"></small></div></div>
+<div class="row"><span>Sleep</span><select id="slp"><option value="0">Off</option><option value="15">15 min</option><option value="30">30 min</option><option value="60">60 min</option><option value="e">End of this song</option><option value="n3">After 3 more songs</option><option value="n5">After 5 more songs</option></select><small id="slpt"></small></div></div>
 <div class="card lt" id="lt-tracks"><div class="row" style="margin:0 0 8px;justify-content:flex-start"><select id="so"><option value="0">A–Z</option><option value="1">Most played</option><option value="2">Newest</option></select><select id="pt" hidden></select></div><div id="tl"></div></div>
 <div class="card lt" id="lt-albums"><div id="alb"></div></div><div class="card lt" id="lt-artists"><div id="arl"></div></div><div class="card lt" id="lt-lists"><div class="row" style="margin:0 0 8px"><input type="text" id="pn" placeholder="New playlist name" style="flex:1"><button id="pc">Create</button></div><div id="pls"></div><small>Playlists remember song names. After reopening the app, pick your folder again and they reconnect.</small></div>
 </section>
@@ -103,6 +103,7 @@ body[data-th=glass] #nav,body[data-th=glass] #mini{background:linear-gradient(rg
 <div class="card"><div class="hd"><b>Equalizer</b><select id="pst"></select></div>
 <canvas id="eqc" width="680" height="280" role="img" aria-label="Equalizer curve. Drag to change the sound."></canvas>
 <small>Drag the curve. The shape you see is what you hear.</small>
+<div class="row" style="justify-content:flex-start"><small>Output profile</small><select id="op"><option>Speaker</option><option>Headphones</option><option>Bluetooth</option><option>Car</option></select></div>
 <div class="row" style="justify-content:flex-start"><button id="svc">Save custom</button><button id="ldc">Load custom</button><button id="rs">Reset all</button></div>
 <details><summary>Fine tune 31 bands</summary><div id="eqw"></div></details></div>
 <div class="card"><b>Dynamics and space</b><div class="tg"><button id="lim">Compressor</button></div>
@@ -120,16 +121,16 @@ body[data-th=glass] #nav,body[data-th=glass] #mini{background:linear-gradient(rg
 <div class="card"><b>Audio fidelity</b>
 <div class="row" style="justify-content:flex-start"><span>Sample rate</span><select id="sr"><option value="0">Auto</option><option value="44100">44.1 kHz</option><option value="48000">48 kHz</option><option value="96000">96 kHz</option></select></div><small>Applies after reopening the app.</small>
 <div class="row" style="justify-content:flex-start"><span>EQ width</span><select id="qw"><option value="6">Narrow</option><option value="4.3">Normal</option><option value="2.5">Wide</option></select></div>
-<div class="tg"><button id="pure">Pure mode</button><button id="hr">Auto headroom</button><button id="safe">Safe mode (no effects, reopen app)</button><button id="rg">Loudness normalization</button><button id="ss">Skip silence</button></div><div class="band"><span>Fade</span><input type="range" id="xf" min="0" max="12" step="1" value="0"><span id="xf_v"></span></div><small>Fade ramps a song down at its end and the next one up. Normalization uses ReplayGain tags when your files have them.</small></div>
+<div class="tg"><button id="pure">Pure mode</button><button id="hr">Auto headroom</button><button id="safe">Safe mode (no effects, reopen app)</button><button id="gl">Gapless playback</button><button id="ps">Remember speed for each song</button><button id="rg">Loudness normalization</button><button id="ss">Skip silence</button></div><div class="band"><span>Crossfade</span><input type="range" id="xf" min="0" max="12" step="1" value="0"><span id="xf_v"></span></div><small>Crossfade overlaps the end of a song with the start of the next. At 0 seconds playback is gapless. Normalization uses ReplayGain tags when your files have them.</small></div>
 <div class="card"><b>About</b><small id="ver"></small></div></section></div>
 <div id="toast"></div><div id="mini"><span id="mt">Nothing playing</span><button id="mpp" aria-label="Play or pause"><svg class="i"><use href="#i-play"/></svg></button></div>
 <nav id="nav"><button data-g="play" class="on"><svg class="i"><use href="#i-note"/></svg><br>Player</button><button data-g="lib"><svg class="i"><use href="#i-lib"/></svg><br>Library</button><button data-g="lyrics"><svg class="i"><use href="#i-mic"/></svg><br>Lyrics</button><button data-g="sound"><svg class="i"><use href="#i-eq"/></svg><br>Sound</button><button data-g="set"><svg class="i"><use href="#i-tune"/></svg><br>Settings</button></nav>
 <audio id="a" preload="auto"></audio>
 <script>
-const $=s=>document.querySelector(s),a=$('#a'),ic=(e,n)=>$(e).innerHTML=`<svg class="i"><use href="#i-${n}"/></svg>`;
+let $=s=>document.querySelector(s),a=$('#a'),A1=a,A2=new Audio(),ic=(e,n)=>$(e).innerHTML=`<svg class="i"><use href="#i-${n}"/></svg>`;
 const B=[20,25,31.5,40,50,63,80,100,125,160,200,250,315,400,500,630,800,1000,1250,1600,2000,2500,3150,4000,5000,6300,8000,10000,12500,16000,20000],BL=B.map(f=>f>=1000?f/1000+'k':''+f);
 let q=[],i=-1,ctx,N={},url,L=[],sh=0,rp=0,sl,cov='#8ab4ff',abA=null,abB=null,fo=0,wlk=null;
-let S={pre:0,eq:B.map(()=>0),mud:0,sib:0,cf:0,warm:0,kar:0,spd:1,kp:1,th:'auto',bg:'tint',rg:1,ss:0,xf:0,safe:0,ct:-18,cr:4,rvm:0,rvs:2,w:1,uf:'system-ui',vol:1,lim:0,mono:0,bal:0,fade:1,wl:0,vs:0,fav:{},pc:{},pl:{},sr:0,qw:4.3,pure:0,hr:1,lf:'system-ui',ls:20,gs:45};
+let S={pre:0,eq:B.map(()=>0),mud:0,sib:0,cf:0,warm:0,kar:0,spd:1,kp:1,th:'auto',bg:'tint',rg:1,ss:0,xf:0,safe:0,gl:1,ps:0,sps:{},op:'Speaker',prof:{},ct:-18,cr:4,rvm:0,rvs:2,w:1,uf:'system-ui',vol:1,lim:0,mono:0,bal:0,fade:1,wl:0,vs:0,fav:{},pc:{},pl:{},sr:0,qw:4.3,pure:0,hr:1,lf:'system-ui',ls:20,gs:45};
 try{Object.assign(S,JSON.parse(localStorage.getItem('gb2')||'{}'));if(S.eq.length!=B.length)S.eq=B.map(()=>0)}catch(e){}
 if(S.v!=352){S.v=352;S.bg='glass'}
 const save=()=>{try{localStorage.setItem('gb2',JSON.stringify(S))}catch(e){}};
@@ -137,12 +138,12 @@ const fmt=s=>isFinite(s)?Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(
 function init(){
  if(ctx)return;
  const AC=window.AudioContext||window.webkitAudioContext;try{ctx=new AC(Object.assign({latencyHint:'playback'},S.sr?{sampleRate:+S.sr}:{}))}catch(e){ctx=new AC()}
- const src=ctx.createMediaElementSource(a);
+ const src=(N.g1=ctx.createGain(),N.g2=ctx.createGain(),ctx.createMediaElementSource(A1).connect(N.g1),ctx.createMediaElementSource(A2).connect(N.g2),N.g1);
  N.pre=ctx.createGain();
  N.eq=B.map((f,k)=>{const n=ctx.createBiquadFilter();n.type='peaking';n.frequency.value=f;n.Q.value=4.3;return n});
  N.mud=ctx.createBiquadFilter();N.mud.type='peaking';N.mud.frequency.value=300;N.mud.Q.value=1;
  N.sib=ctx.createBiquadFilter();N.sib.type='peaking';N.sib.frequency.value=7200;N.sib.Q.value=2;
- let n=src;[N.pre,...N.eq,N.mud,N.sib].forEach(x=>{n.connect(x);n=x});
+ let n=src;[N.pre,...N.eq,N.mud,N.sib].forEach(x=>{n.connect(x);n=x});N.g2.connect(N.pre);
  const mix=ctx.createGain(),sh2=ctx.createWaveShaper(),cu=new Float32Array(1024);
  for(let k=0;k<1024;k++){const x=k/512-1;cu[k]=Math.tanh(2.5*x)+0.1*x*x}
  sh2.curve=cu;sh2.oversample='2x';N.dry=ctx.createGain();N.wet=ctx.createGain();
@@ -161,10 +162,10 @@ function init(){
  apply();viz();
 }
 const rt0=document.documentElement.style;
-function apply(){document.body.dataset.th=S.bg||'tint';document.documentElement.style.colorScheme=S.bg=='light'?'light':'dark';document.querySelectorAll('[data-bg]').forEach(b=>b.classList.toggle('on',b.dataset.bg==S.bg));$('#uf').value=S.uf;rt0.setProperty('--uf',S.uf);a.volume=S.vol;$('#vol').value=S.vol;$('#bal').value=S.bal;$('#ct').value=S.ct;$('#ct_v').textContent=S.ct+' dB';$('#cr').value=S.cr;$('#cr_v').textContent=S.cr+':1';$('#rvm').value=S.rvm;$('#rvm_v').textContent=Math.round(S.rvm*100)+'%';$('#rvs').value=S.rvs;$('#rvs_v').textContent=S.rvs+' s';$('#sw').value=S.w;$('#sw_v').textContent=Math.round(S.w*100)+'%';drawEq();$('#xf').value=S.xf;$('#xf_v').textContent=S.xf+'s';$('#sr').value=S.sr;$('#qw').value=S.qw;$('#lf').value=S.lf;$('#ls').value=S.ls;$('#gs').value=S.gs;$('#ls_v').textContent=S.ls;const rt=document.documentElement.style;rt.setProperty('--lf',S.lf);rt.setProperty('--ls',S.ls+'px');rt.setProperty('--gs',S.gs+'%');if(S.wl&&!wlk&&navigator.wakeLock)navigator.wakeLock.request('screen').then(l=>wlk=l).catch(()=>{});if(!S.wl&&wlk){wlk.release();wlk=null}
+function apply(){document.body.dataset.th=S.bg||'tint';document.documentElement.style.colorScheme=S.bg=='light'?'light':'dark';document.querySelectorAll('[data-bg]').forEach(b=>b.classList.toggle('on',b.dataset.bg==S.bg));$('#uf').value=S.uf;rt0.setProperty('--uf',S.uf);a.volume=S.vol;$('#vol').value=S.vol;$('#bal').value=S.bal;$('#ct').value=S.ct;$('#ct_v').textContent=S.ct+' dB';$('#cr').value=S.cr;$('#cr_v').textContent=S.cr+':1';$('#rvm').value=S.rvm;$('#rvm_v').textContent=Math.round(S.rvm*100)+'%';$('#rvs').value=S.rvs;$('#rvs_v').textContent=S.rvs+' s';$('#sw').value=S.w;$('#sw_v').textContent=Math.round(S.w*100)+'%';drawEq();$('#op').value=S.op||'Speaker';$('#xf').value=S.xf;$('#xf_v').textContent=S.xf+'s';$('#sr').value=S.sr;$('#qw').value=S.qw;$('#lf').value=S.lf;$('#ls').value=S.ls;$('#gs').value=S.gs;$('#ls_v').textContent=S.ls;const rt=document.documentElement.style;rt.setProperty('--lf',S.lf);rt.setProperty('--ls',S.ls+'px');rt.setProperty('--gs',S.gs+'%');if(S.wl&&!wlk&&navigator.wakeLock)navigator.wakeLock.request('screen').then(l=>wlk=l).catch(()=>{});if(!S.wl&&wlk){wlk.release();wlk=null}
  $('#pre_v').textContent=S.pre;$('#pre').value=S.pre;$('#spd_v').textContent=S.spd;$('#spd').value=S.spd;
  document.querySelectorAll('.eqs').forEach((e,k)=>e.value=S.eq[k]);
- ['mud','sib','cf','warm','kar','kp','lim','mono','fade','wl','vs','pure','hr','rg','ss','safe'].forEach(k=>$('#'+k).classList.toggle('on',!!S[k]));
+ ['mud','sib','cf','warm','kar','kp','lim','mono','fade','wl','vs','pure','hr','rg','ss','safe','gl','ps'].forEach(k=>$('#'+k).classList.toggle('on',!!S[k]));
  a.defaultPlaybackRate=S.spd;a.playbackRate=S.spd;a.preservesPitch=a.webkitPreservesPitch=a.mozPreservesPitch=!!S.kp;
  document.querySelectorAll('[data-t]').forEach(b=>b.classList.toggle('on',b.dataset.t==S.th));
  document.documentElement.style.setProperty('--acc',S.th=='auto'?cov:S.th);
@@ -213,7 +214,7 @@ function showArt(u){const im=new Image();im.onload=()=>{const s=Math.min(im.widt
  ART=u;if('mediaSession' in navigator&&navigator.mediaSession.metadata)navigator.mediaSession.metadata.artwork=[{src:u,sizes:'512x512'}]}
 $('#pre').oninput=e=>{S.pre=+e.target.value;apply();save()};
 $('#spd').oninput=e=>{S.spd=+e.target.value;apply();save()};
-['mud','sib','cf','warm','kar','kp','lim','mono','fade','wl','vs','pure','hr','rg','ss','safe'].forEach(k=>$('#'+k).onclick=()=>{S[k]=S[k]?0:1;apply();save()});
+['mud','sib','cf','warm','kar','kp','lim','mono','fade','wl','vs','pure','hr','rg','ss','safe','gl','ps'].forEach(k=>$('#'+k).onclick=()=>{S[k]=S[k]?0:1;apply();save()});
 $('#rs').onclick=()=>{S=Object.assign(S,{pre:0,eq:B.map(()=>0),mud:0,sib:0,cf:0,warm:0,kar:0,spd:1,kp:1});apply();save()};
 document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{S.th=b.dataset.t;apply();save()});
 function cover(t){
@@ -245,8 +246,9 @@ function sheet(f){const o=document.createElement('div'),c=document.createElement
  o.onclick=e=>{if(e.target===o)o.remove()};o.append(c);document.body.append(o)}
 function tick(){
  if(!N.an||a.paused)return;const d=a.duration,t=a.currentTime;
- if(fd&&d-t>S.xf+1){fd=0;N.m.gain.cancelScheduledValues(0);N.m.gain.setValueAtTime(1,ctx.currentTime)}
- if(S.xf&&d&&d-t<=S.xf&&d-t>.3&&!fd){fd=1;N.m.gain.cancelScheduledValues(0);N.m.gain.setValueAtTime(N.m.gain.value,ctx.currentTime);N.m.gain.linearRampToValueAtTime(0,ctx.currentTime+d-t-.1)}
+ if(d&&isFinite(d)&&N.g1&&(S.gl||S.xf)){const r=d-t;
+  if(r<(S.xf||0)+14&&nxt==-1&&!XFg){const p=pick();if(p>=0&&p!=i){nxt=p;const o=other();if(o._u)URL.revokeObjectURL(o._u);o._u=URL.createObjectURL(q[p]);o.src=o._u;o.dataset.k=p;o.load()}else nxt=-2}
+  if(nxt>=0&&!XFg){if(S.xf&&r<=S.xf)swap(S.xf);else if(!S.xf&&r<1.2&&!gt)gt=setTimeout(()=>{gt=0;if(a.duration-a.currentTime<.6)swap(0)},Math.max(0,(r/a.playbackRate-.06)*1000))}}
  if(S.ss){sbuf=sbuf||new Uint8Array(N.an.fftSize);N.an.getByteTimeDomainData(sbuf);let m=0;for(const v of sbuf)m=Math.max(m,Math.abs(v-128));
   if(m<3){qs++;if(t<20&&qs>1)a.currentTime=t+1;else if(d&&d-t<30&&qs>6){qs=0;go(1)}}else qs=0}
 }
@@ -258,14 +260,17 @@ $('#srch').oninput=render;
 function load(k){
  if(k<0||k>=q.length)return;
  if(!S.safe){try{init();ctx.resume()}catch(e){toast('Audio effects failed: '+e.message+'. Turn on Safe mode in Settings.')}}
- if(url)URL.revokeObjectURL(url);
- i=k;url=URL.createObjectURL(q[k]);a.src=url;apply();a.play().catch(e=>toast('Playback blocked: '+e.message));L=[];$('#ly').innerHTML='<small>Load a .lrc file for synced lyrics</small>';
+ if(stopCount&&--stopCount==0)stopAfter=1;
+ if(S.ps)S.spd=S.sps[q[k].name]||1;
+ i=k;clearTimeout(gt);gt=0;nxt=-1;
+ if(!(XF&&XF.k==k)){const o=other();o.pause();if(o._u){URL.revokeObjectURL(o._u);o._u=0}if(N.g1){N.g1.gain.cancelScheduledValues(0);N.g2.gain.cancelScheduledValues(0);N.g1.gain.value=N.g2.gain.value=1}
+  if(a._u)URL.revokeObjectURL(a._u);a._u=URL.createObjectURL(q[k]);a.src=a._u;apply();a.play().catch(e=>toast('Playback blocked: '+e.message))}L=[];$('#ly').innerHTML='<small>Load a .lrc file for synced lyrics</small>';
  PL='';drawLy();if(LR[bn(q[k].name)])pl(LR[bn(q[k].name)]);
  abA=abB=null;$('#ab').textContent='A–B';$('#ab').classList.remove('on');ic('#fav',S.fav[q[k].name]?'heart2':'heart');
  S.pc[q[k].name]=(S.pc[q[k].name]||0)+1;save();
- fd=0;qs=0;RG=0;if(N.m){N.m.gain.cancelScheduledValues(0);const fi=S.xf?Math.min(S.xf,4):S.fade?.8:0;N.m.gain.setValueAtTime(fi?0:1,ctx.currentTime);if(fi)N.m.gain.linearRampToValueAtTime(1,ctx.currentTime+fi)}
+ fd=0;qs=0;RG=0;if(N.m&&!XF){N.m.gain.cancelScheduledValues(0);const fi=S.xf?Math.min(S.xf,4):S.fade?.8:0;N.m.gain.setValueAtTime(fi?0:1,ctx.currentTime);if(fi)N.m.gain.linearRampToValueAtTime(1,ctx.currentTime+fi)}
  getTags(q[k]).then(r=>{if(i!=k)return;RG=r.rg||0;apply();if(r.ti||r.ar){MD[q[k].name]={ti:r.ti,ar:r.ar,al:r.al};setNP(k);render()}if(r.art)showArt(URL.createObjectURL(r.art));if(!LR[bn(q[k].name)]){if(r.sy&&r.sy.length){L=r.sy;drawLy()}else if(r.tx)setLy(r.tx)}}).catch(()=>{});
- ART=null;setNP(k);cover(nm(q[k]));render();
+ ART=null;setNP(k);cover(nm(q[k]));render();XF=null;
 }
 function go(d){
  if(!q.length)return;
@@ -291,10 +296,25 @@ $('#prev').onclick=()=>a.currentTime>3?a.currentTime=0:go(-1);
 $('#shf').onclick=e=>{sh=!sh;e.currentTarget.classList.toggle('on',sh)};
 $('#rpt').onclick=e=>{rp=(rp+1)%3;ic('#rpt',rp==2?'repeat1':'repeat');e.currentTarget.classList.toggle('on',rp>0)};
 a.onplay=()=>{ic('#pp','pause');ic('#mpp','pause')};a.onpause=()=>{ic('#pp','play');ic('#mpp','play')};
-a.onended=()=>{if(rp==2)load(i);else if(sh||i+1<q.length)go(1);else if(rp==1)load(0)};
+a.onended=()=>{const k=pick();if(k>=0)load(k);else if(stopAfter){stopAfter=0;$('#slp').value=0;$('#slpt').textContent=''}};
 a.ontimeupdate=()=>{tick();if(abB!=null&&a.currentTime>=abB)a.currentTime=abA||0;$('#cur').textContent=fmt(a.currentTime);$('#dur').textContent=fmt(a.duration);if(a.duration){const p=a.currentTime/a.duration;$('#seek').value=p*1000;$('#seek').style.setProperty('--p',p*100+'%')}lyr()};
 $('#seek').oninput=e=>{if(a.duration)a.currentTime=e.target.value/1000*a.duration};
-$('#slp').onchange=e=>{clearTimeout(sl);const m=+e.target.value;$('#slpt').textContent=m?'pausing in '+m+' min':'';if(m)sl=setTimeout(()=>{a.pause();$('#slp').value=0;$('#slpt').textContent=''},m*60000)};
+let stopAfter=0,stopCount=0,gt=0,nxt=-1,XF=null,XFg=0;
+const other=()=>a===A1?A2:A1;
+function pick(){if(stopAfter||!q.length)return -1;if(rp==2)return i;if(sh&&q.length>1){let k;do{k=Math.floor(Math.random()*q.length)}while(k==i);return k}return i+1<q.length?i+1:rp==1?0:-1}
+function swap(fs){
+ if(XFg||nxt<0||!N.g1)return;if(stopAfter){nxt=-2;return}
+ const k=nxt,o=other(),old=a,g=x=>x===A1?N.g1:N.g2,gi=g(o),go=g(old),now=ctx.currentTime;
+ if(!o.src||+o.dataset.k!==k)return;XFg=1;
+ a=o;if(S.ps)S.spd=S.sps[q[k].name]||1;apply();
+ gi.gain.cancelScheduledValues(0);gi.gain.setValueAtTime(fs?0:1,now);if(fs)gi.gain.linearRampToValueAtTime(1,now+fs);
+ if(fs){go.gain.cancelScheduledValues(0);go.gain.setValueAtTime(go.gain.value,now);go.gain.linearRampToValueAtTime(0,now+fs)}
+ o.play().catch(()=>{});XF={k};const ou=old._u;load(k);
+ setTimeout(()=>{old.pause();old._u=0;if(ou)URL.revokeObjectURL(ou);go.gain.cancelScheduledValues(0);go.gain.value=1;XFg=0},(fs||.15)*1000+400);
+}
+function sleepEnd(){if(N.m){const n=ctx.currentTime;N.m.gain.cancelScheduledValues(0);N.m.gain.setValueAtTime(N.m.gain.value,n);N.m.gain.linearRampToValueAtTime(0,n+15);setTimeout(()=>{a.pause();N.m.gain.cancelScheduledValues(0);N.m.gain.value=1},15200)}else a.pause();$('#slp').value=0;$('#slpt').textContent=''}
+$('#slp').onchange=e=>{clearTimeout(sl);stopAfter=0;stopCount=0;nxt=-1;const v=e.target.value,m=+v,t=$('#slpt');t.textContent='';
+ if(v=='e'){stopAfter=1;t.textContent='stops after this song'}else if(v[0]=='n'){stopCount=+v.slice(1);t.textContent='stops after '+stopCount+' more songs'}else if(m){t.textContent='fades out in '+m+' min';sl=setTimeout(sleepEnd,m*60000)}};
 function viz(){
  const c=$('#vz'),x=c.getContext('2d'),d=new Uint8Array(N.an.frequencyBinCount);let t0=0;
  (function f(ts){requestAnimationFrame(f);if(ts-t0<45||a.paused)return;t0=ts;
@@ -346,13 +366,18 @@ document.querySelectorAll('[data-bg]').forEach(b=>b.onclick=()=>{S.bg=b.dataset.
 $('#uf').onchange=e=>{S.uf=e.target.value;apply();save()};
 $('#pc').onclick=()=>{const n=$('#pn').value.trim();if(n&&!S.pl[n]){S.pl[n]=[];save();$('#pn').value='';rp2();pt()}};
 $('#so').onchange=rl;
+$('#spd').addEventListener('input',e=>{if(S.ps&&q[i])S.sps[q[i].name]=+e.target.value});
+const PK=['eq','pre','mud','sib','cf','warm','lim','mono','w','rvm','rvs','ct','cr'],cp=v=>Array.isArray(v)?v.slice():v;
+$('#op').onchange=e=>{const o=S.op||'Speaker',n=e.target.value;S.prof=S.prof||{};S.prof[o]={};PK.forEach(k=>S.prof[o][k]=cp(S[k]));S.op=n;const p=S.prof[n];if(p)PK.forEach(k=>{if(k in p)S[k]=cp(p[k])});if(N.cv&&S.rvs)N.cv.buffer=mkIR(S.rvs);apply();save()};
+if(navigator.mediaDevices&&navigator.mediaDevices.addEventListener)navigator.mediaDevices.addEventListener('devicechange',()=>toast('Audio output changed. You can switch the output profile in Sound.'));
 [['ct','ct'],['cr','cr'],['rvm','rvm'],['sw','w']].forEach(([id,k])=>$('#'+id).oninput=e=>{S[k]=+e.target.value;apply();save()});
 $('#rvs').oninput=e=>{S.rvs=+e.target.value;$('#rvs_v').textContent=S.rvs+' s'};$('#rvs').onchange=()=>{if(N.cv)N.cv.buffer=mkIR(S.rvs);save()};$('#xf').oninput=e=>{S.xf=+e.target.value;apply();save()};
 render();rl();pt();rp2();
 function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',8000)}
 addEventListener('error',e=>toast('Error: '+e.message));addEventListener('unhandledrejection',e=>toast('Error: '+(e.reason&&e.reason.message||e.reason)));
+['onplay','onpause','onended','ontimeupdate','onerror'].forEach(h=>{const f=A1[h],w=ev=>{if(ev.target===a)f(ev)};A1[h]=w;A2[h]=w});
 a.onerror=()=>toast('This file could not be played'+(a.error?': '+a.error.message:''));
-$('#ver').textContent='Version 3.5.3';
+$('#ver').textContent='Version 3.6';
 drawLy();
 apply();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
