@@ -2,12 +2,12 @@
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#000000"><meta name="color-scheme" content="dark">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <title>GrooveBox</title>
 <style>
-:root{--acc:#8ab4ff;--gs:45%;--lf:system-ui;--ls:20px;--uf:system-ui;--bg:#000;--s2:rgba(255,255,255,.1);--sh:#161616;--ln:rgba(255,255,255,.1);--tx:#fff;--t2:#9a9aa0;--ic:#000}
+:root{color-scheme:dark;--acc:#8ab4ff;--gs:45%;--lf:system-ui;--ls:20px;--uf:system-ui;--bg:#000;--s2:rgba(255,255,255,.1);--sh:#161616;--ln:rgba(255,255,255,.1);--tx:#fff;--t2:#9a9aa0;--ic:#000}
 body[data-th=dim]{--bg:#121212;--sh:#232323}
 body[data-th=light]{--bg:#fff;--s2:rgba(0,0,0,.07);--sh:#fff;--ln:rgba(0,0,0,.1);--tx:#111;--t2:#666;--ic:#fff}
 body[data-th=tint]{--bg:linear-gradient(180deg,color-mix(in srgb,var(--acc) var(--gs),#000),#000 62%);--sh:#1b1b1b}
@@ -21,7 +21,7 @@ body{background:var(--bg);color:var(--tx);font:16px/1.4 var(--uf),system-ui,sans
 .hd{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}.hd b{margin:0}
 button,.btn,select,input[type=text],summary{background:var(--s2);color:var(--tx);border:0;border-radius:14px;padding:12px 16px;font:inherit;font-size:15px;cursor:pointer}
 input[type=text]::placeholder{color:var(--t2)}select{max-width:62%}button:active{opacity:.6}
-.on{background:var(--tx)!important;color:var(--ic)!important}
+button.on,label.on{background:var(--tx)!important;color:var(--ic)!important}
 .i{width:24px;height:24px;fill:currentColor;display:block;margin:auto}
 .meta{display:flex;align-items:center;gap:12px}.meta>div{flex:1;min-width:0}
 #np{font-size:25px;font-weight:800;letter-spacing:-.02em;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -33,9 +33,9 @@ input[type=text]::placeholder{color:var(--t2)}select{max-width:62%}button:active
 .tools,.row{display:flex;gap:8px;align-items:center;justify-content:center;margin-top:10px;flex-wrap:wrap}
 .fl .i{transform:scaleX(-1)}
 input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent}
-input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:var(--s2)}
+input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:rgba(150,150,150,.4)}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--tx);margin-top:-6px}
-#seek::-webkit-slider-runnable-track{background:linear-gradient(90deg,var(--tx) var(--p,0%),var(--s2) var(--p,0%))}
+#seek::-webkit-slider-runnable-track{background:linear-gradient(90deg,var(--tx) var(--p,0%),rgba(150,150,150,.4) var(--p,0%))}
 #t{display:flex;justify-content:space-between;color:var(--t2);font-size:12px}
 #vz{width:100%;height:50px;display:block;margin-top:14px}
 #ly,#ly2{font-family:var(--lf),system-ui}#ly{min-height:64px;margin-top:10px;color:var(--t2)}#ly b{display:block;color:var(--tx);font-size:var(--ls);margin:4px 0}
@@ -161,7 +161,7 @@ function init(){
  apply();viz();
 }
 const rt0=document.documentElement.style;
-function apply(){document.body.dataset.th=S.bg||'tint';document.querySelectorAll('[data-bg]').forEach(b=>b.classList.toggle('on',b.dataset.bg==S.bg));$('#uf').value=S.uf;rt0.setProperty('--uf',S.uf);a.volume=S.vol;$('#vol').value=S.vol;$('#bal').value=S.bal;$('#ct').value=S.ct;$('#ct_v').textContent=S.ct+' dB';$('#cr').value=S.cr;$('#cr_v').textContent=S.cr+':1';$('#rvm').value=S.rvm;$('#rvm_v').textContent=Math.round(S.rvm*100)+'%';$('#rvs').value=S.rvs;$('#rvs_v').textContent=S.rvs+' s';$('#sw').value=S.w;$('#sw_v').textContent=Math.round(S.w*100)+'%';drawEq();$('#xf').value=S.xf;$('#xf_v').textContent=S.xf+'s';$('#sr').value=S.sr;$('#qw').value=S.qw;$('#lf').value=S.lf;$('#ls').value=S.ls;$('#gs').value=S.gs;$('#ls_v').textContent=S.ls;const rt=document.documentElement.style;rt.setProperty('--lf',S.lf);rt.setProperty('--ls',S.ls+'px');rt.setProperty('--gs',S.gs+'%');if(S.wl&&!wlk&&navigator.wakeLock)navigator.wakeLock.request('screen').then(l=>wlk=l).catch(()=>{});if(!S.wl&&wlk){wlk.release();wlk=null}
+function apply(){document.body.dataset.th=S.bg||'tint';document.documentElement.style.colorScheme=S.bg=='light'?'light':'dark';document.querySelectorAll('[data-bg]').forEach(b=>b.classList.toggle('on',b.dataset.bg==S.bg));$('#uf').value=S.uf;rt0.setProperty('--uf',S.uf);a.volume=S.vol;$('#vol').value=S.vol;$('#bal').value=S.bal;$('#ct').value=S.ct;$('#ct_v').textContent=S.ct+' dB';$('#cr').value=S.cr;$('#cr_v').textContent=S.cr+':1';$('#rvm').value=S.rvm;$('#rvm_v').textContent=Math.round(S.rvm*100)+'%';$('#rvs').value=S.rvs;$('#rvs_v').textContent=S.rvs+' s';$('#sw').value=S.w;$('#sw_v').textContent=Math.round(S.w*100)+'%';drawEq();$('#xf').value=S.xf;$('#xf_v').textContent=S.xf+'s';$('#sr').value=S.sr;$('#qw').value=S.qw;$('#lf').value=S.lf;$('#ls').value=S.ls;$('#gs').value=S.gs;$('#ls_v').textContent=S.ls;const rt=document.documentElement.style;rt.setProperty('--lf',S.lf);rt.setProperty('--ls',S.ls+'px');rt.setProperty('--gs',S.gs+'%');if(S.wl&&!wlk&&navigator.wakeLock)navigator.wakeLock.request('screen').then(l=>wlk=l).catch(()=>{});if(!S.wl&&wlk){wlk.release();wlk=null}
  $('#pre_v').textContent=S.pre;$('#pre').value=S.pre;$('#spd_v').textContent=S.spd;$('#spd').value=S.spd;
  document.querySelectorAll('.eqs').forEach((e,k)=>e.value=S.eq[k]);
  ['mud','sib','cf','warm','kar','kp','lim','mono','fade','wl','vs','pure','hr','rg','ss','safe'].forEach(k=>$('#'+k).classList.toggle('on',!!S[k]));
@@ -208,7 +208,7 @@ async function getTags(f,lim){
 function showArt(u){const im=new Image();im.onload=()=>{const s=Math.min(im.width,im.height);$('#cv').getContext('2d').drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,340,340);
  const t=document.createElement('canvas').getContext('2d');t.canvas.width=t.canvas.height=8;t.drawImage(im,0,0,8,8);
  const d=t.getImageData(0,0,8,8).data;let r=0,g=0,b=0;for(let k=0;k<256;k+=4){r+=d[k];g+=d[k+1];b+=d[k+2]}
- r/=64;g/=64;b/=64;const f=Math.min(2.2,200/(Math.max(r,g,b)||1));
+ r/=64;g/=64;b/=64;const f=Math.min(4,215/(Math.max(r,g,b)||1));
  cov=`rgb(${Math.min(255,r*f)|0},${Math.min(255,g*f)|0},${Math.min(255,b*f)|0})`;apply()};im.src=u;
  ART=u;if('mediaSession' in navigator&&navigator.mediaSession.metadata)navigator.mediaSession.metadata.artwork=[{src:u,sizes:'512x512'}]}
 $('#pre').oninput=e=>{S.pre=+e.target.value;apply();save()};
@@ -352,7 +352,7 @@ render();rl();pt();rp2();
 function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',8000)}
 addEventListener('error',e=>toast('Error: '+e.message));addEventListener('unhandledrejection',e=>toast('Error: '+(e.reason&&e.reason.message||e.reason)));
 a.onerror=()=>toast('This file could not be played'+(a.error?': '+a.error.message:''));
-$('#ver').textContent='Version 3.5.2';
+$('#ver').textContent='Version 3.5.3';
 drawLy();
 apply();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
