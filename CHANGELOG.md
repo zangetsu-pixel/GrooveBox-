@@ -99,3 +99,16 @@ Word-by-word lyrics, BPM, tag editing, vault, hearing test and DJ tools are not 
 - [ ] **Backup**: copy your settings as text and paste them back on another phone or after clearing the browser.
 - [ ] Tap the lyrics area on the Player to open the full Lyrics page.
 - [ ] Settings, About says "Version 3.7".
+
+## Update 3.8 (test checklist)
+- [ ] **Rain theme** (Settings, Live themes): animated rain over a blue-grey glow. **Adaptive (album art)** theme: background glow and colors follow each song's cover.
+- [ ] **Three-tier equalizer** (Sound): Base (bass, mid, treble, deep bass), Graphic (31 bands), Parametric (up to 16 nodes, drag the numbered dots on the curve). The curve shows the combined result of all three.
+- [ ] **Extra bass:** Bass up to +15 dB with adjustable frequency, plus Deep bass harmonics.
+- [ ] **Album cover by majority:** each album uses the cover most of its songs share.
+- [ ] **Full-screen lyrics:** tap the album art on the Player. Lyrics sync is now smooth, with Earlier/Later buttons to fix timing.
+- [ ] **Visualizer is back and bigger:** tap the style button on the Player (Bars, Wave, Mirror, Radial, Dots, LED).
+- [ ] **Wallpaper** (Settings): pick an image, GIF or video to play behind the app; **blur** and dim sliders; or a blurred album art background.
+- [ ] **Spatial audio** (headphones) and **ambient sound** (rain, brown noise, white noise) in Sound.
+- [ ] Playlists page: Play all, Shuffle all, and a Your listening summary. Tracks tab has search. Player shows format and bitrate, with a Lossless label for FLAC and WAV.
+- [ ] Resumes the last song and position when you pick your music again (Settings, can be turned off).
+- [ ] Settings, About says "Version 3.8".
