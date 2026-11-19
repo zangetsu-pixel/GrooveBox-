@@ -86,3 +86,16 @@ Word-by-word lyrics, BPM, tag editing, vault, hearing test and DJ tools are not 
 - [ ] **Sleep timer upgrades** (Library, Queue): fades the volume out over 15 seconds at the end of a timed sleep, plus "End of this song", "After 3 more songs" and "After 5 more songs".
 - [ ] Already there from earlier updates: ReplayGain normalization, reverb, balance, skip silence, 31-band equalizer.
 - [ ] Settings, About says "Version 3.6".
+
+## Update 3.7 (test checklist)
+- [ ] **Albums page** (bottom bar): grid of albums with cover art. Open one to see its songs **numbered by track** (and disc), sorted like the album. Needs track-number tags in your files.
+- [ ] **Playlists page** (bottom bar): All songs, Most played, Recently played, Recently added, Favorites, Never played, then your own playlists below. Tap any to open it, with Play and Shuffle.
+- [ ] Library page now has Queue, Tracks, Artists, Genres and Folders. Song menus got "Go to album" and, inside a playlist, "Remove from playlist".
+- [ ] **Live themes** (Settings): Starboy, After Hours, Aurora, Sunset, Ocean, Neon city. They glow and drift, and can pulse to the bass. Turn off Animate background if your phone stutters.
+- [ ] **Title style** (Settings): Starboy, After Hours, Retro, Serif, Heavy. Inspired by those albums; the real typefaces are licensed.
+- [ ] More lyric/app fonts: Starboy style, After Hours style.
+- [ ] **Layout**: cover shape (rounded, square, vinyl that spins), density, cover size, corner roundness, text size, lyric alignment, visualizer on/off and rainbow bars, navigation labels on/off, vibrate on tap.
+- [ ] More accent colors plus a custom color picker.
+- [ ] **Backup**: copy your settings as text and paste them back on another phone or after clearing the browser.
+- [ ] Tap the lyrics area on the Player to open the full Lyrics page.
+- [ ] Settings, About says "Version 3.7".
