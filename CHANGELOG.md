@@ -112,3 +112,16 @@ Word-by-word lyrics, BPM, tag editing, vault, hearing test and DJ tools are not 
 - [ ] Playlists page: Play all, Shuffle all, and a Your listening summary. Tracks tab has search. Player shows format and bitrate, with a Lossless label for FLAC and WAV.
 - [ ] Resumes the last song and position when you pick your music again (Settings, can be turned off).
 - [ ] Settings, About says "Version 3.8".
+
+## Update 3.9 (test checklist)
+- [ ] **Visualizer and equalizer spectrum:** if they don't move, open Sound. A status line says "Audio engine: on", "Safe mode is on" or shows the error. If Safe mode is on, use "Turn off and restart". Safe mode is now switched off for everyone by this update.
+- [ ] **Player is only the player:** cover, title, seek, controls, visualizer. The mini lyrics bar is gone. Tap the album art for full-screen lyrics.
+- [ ] **Add songs, Add folder and Lyrics file** moved to Library, Folders.
+- [ ] **Video and animated wallpapers show behind full-screen lyrics** too.
+- [ ] **Word-by-word lyrics:** Enhanced LRC files (word times in angle brackets) highlight each word as it is sung. Normal LRC files get estimated word timing. Switch both in Settings, Lyrics. Lyrics are remembered per song, and you can paste lyrics there too.
+- [ ] **Settings reorganized** into sections: Appearance, Wallpapers, Fonts and glow, Audio, Lyrics, Playback, Backup and about.
+- [ ] **Glowing text** (Settings, Fonts and glow): any font can glow, with color, size and pulse. About 10 more fonts.
+- [ ] **Animated wallpapers** (Settings, Wallpapers): Rain on window (WebGL, drops run down glass over a blurred city), Storm (3D rain with splashes and lightning), Warp stars, Snow, Aurora, Fireflies, Embers, Waves, Bokeh. They use the album art colors.
+- [ ] **Rain theme** (Settings, Appearance, Live themes, Rain window) turns on the rain-on-window wallpaper.
+- [ ] **More player features:** Bookmarks (Player button, Library tab), fade on pause and resume, shake to skip, remove or move songs in the queue menu.
+- [ ] Settings, About says "Version 3.9".
