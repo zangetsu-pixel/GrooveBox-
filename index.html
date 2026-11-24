@@ -623,7 +623,7 @@ function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';cl
 addEventListener('error',e=>toast('Error: '+e.message));addEventListener('unhandledrejection',e=>toast('Error: '+(e.reason&&e.reason.message||e.reason)));
 ['onplay','onpause','onended','ontimeupdate','onerror'].forEach(h=>{const f=A1[h],w=ev=>{if(ev.target===a)f(ev)};A1[h]=w;A2[h]=w});
 a.onerror=()=>toast('This file could not be played'+(a.error?': '+a.error.message:''));
-$('#ver').textContent='Version 3.9';
+$('#ver').textContent='Version 3.9.1';
 drawLy();
 apply();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});

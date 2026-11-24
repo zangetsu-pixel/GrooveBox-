@@ -125,3 +125,10 @@ Word-by-word lyrics, BPM, tag editing, vault, hearing test and DJ tools are not 
 - [ ] **Rain theme** (Settings, Appearance, Live themes, Rain window) turns on the rain-on-window wallpaper.
 - [ ] **More player features:** Bookmarks (Player button, Library tab), fade on pause and resume, shake to skip, remove or move songs in the queue menu.
 - [ ] Settings, About says "Version 3.9".
+
+## Update 3.9.1 (fix, test checklist)
+- [ ] **Offline install fixed:** the app was missing `manifest.webmanifest`, which made the service worker fail to install. Added the manifest; the service worker now also tolerates a missing file.
+- [ ] Open the site once online, then turn on airplane mode and reload: the app should still open.
+- [ ] Chrome menu should now offer "Install app" / "Add to Home screen" as a standalone app.
+- [ ] Service worker only caches successful responses; cache name bumped to `groovebox-v14` so old files clear out.
+- [ ] Settings, About says "Version 3.9.1".
