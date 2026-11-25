@@ -154,3 +154,12 @@ Navigation is now Home, Library, Player, Sound, Settings.
 - [ ] With Safe mode off, if any part of the effects engine fails to start on your phone, the app now keeps playing sound normally instead of going silent. The Sound page status line says what failed, and a message shows the reason (send it to me if you see it).
 - [ ] The audio engine now resumes itself if Android pauses it, so music no longer stays silent until you toggle something.
 - [ ] Settings, About says "Version 3.10.1".
+
+## Update 3.11 (safe mode is now the base)
+- [ ] **Basic playback is the default.** Songs play straight through the phone's own player. No effects engine is started, so nothing can silence or break playback. Safe mode is gone as a separate setting.
+- [ ] **Effects are opt-in:** in Sound, turn on the equalizer switch (or tap Turn on effects). The Sound effects engine row in Settings, Audio does the same. The bars, knobs, presets, reverb, spatial and crossfade only change the sound while effects are on.
+- [ ] If effects fail to start on your phone, playback keeps going without them and the Sound page says why.
+- [ ] Your effects setting is reset to off once on first launch. Your other settings stay.
+- [ ] Without effects the seek bar still shows the waveform and progress. The live bouncing needs effects on.
+- [ ] Turning effects off after they started needs a reopen of the app (use Pure mode to bypass them right away).
+- [ ] Settings, About says "Version 3.11".
