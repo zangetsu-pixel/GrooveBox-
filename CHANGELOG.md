@@ -132,3 +132,20 @@ Word-by-word lyrics, BPM, tag editing, vault, hearing test and DJ tools are not 
 - [ ] Chrome menu should now offer "Install app" / "Add to Home screen" as a standalone app.
 - [ ] Service worker only caches successful responses; cache name bumped to `groovebox-v14` so old files clear out.
 - [ ] Settings, About says "Version 3.9.1".
+
+## Update 3.10 (redesign, test checklist)
+Navigation is now Home, Library, Player, Sound, Settings.
+- [ ] **Lyrics:** tap the album art on the Player and the full lyrics screen opens (it was hidden behind the page before). The back arrow returns.
+- [ ] **Player:** the page no longer scrolls. The cover scales to fit the screen.
+- [ ] **Seek bar is the visualizer:** bars move with the music, the played part is colored, tap or drag to seek. Style button cycles Mirror, Bars, Wave, Dots. Settings, Player and layout turns it into a plain bar.
+- [ ] **Mini player** on every other page: album art, title, artist, previous, play or pause, next, and a progress line. Tap the art or title to open the Player.
+- [ ] **Songs with no cover** show the Glacier White GrooveBox wave on a two-tone OLED black cover (also in lists and the mini player).
+- [ ] **OLED Black two-tone** is the new base theme: pure black with a slightly lifted black for cards. New Glacier theme. Live themes and wallpapers only tint the background now, the layout stays the same. Theme picker uses preview tiles, accent colors are swatches.
+- [ ] **Equalizer rebuilt Musicolet style:** on/off switch, preset chips, 10 vertical bars with dB readout, and a response curve with live spectrum. Fine tune (31 bands, parametric) is under Presets.
+- [ ] **Knobs:** Bass boost, Bass freq, Deep bass, Mid, Treble, Presence, Loudness, Virtualizer, Reverb, Preamp. Drag up or down, double tap to reset. Presence and Loudness are new.
+- [ ] **Sound is fuller:** stronger presets (new Full sound, Dance, Metal, Lounge, Piano, Headphones, Small speakers), auto headroom no longer cuts the volume as much, and a safety limiter prevents clipping.
+- [ ] **Library** works like Your Library: chips for Songs, Albums, Artists, Playlists, Genres, Folders, Queue, Bookmarks. Song rows have cover thumbnails.
+- [ ] **Home:** greeting, Play all, Shuffle all, quick tiles (Favorites, Recently played, Most played, Recently added, All songs, Never played), Jump back in, albums, listening stats.
+- [ ] **Settings** grouped into Appearance, Player and layout, Wallpapers, Fonts and text, Audio, Lyrics, Playback, Backup and about, each with an icon.
+- [ ] **Fonts:** every font is listed in its own typeface with a check mark. Custom font loader and a preview line are included.
+- [ ] New custom line icons for navigation and settings.
