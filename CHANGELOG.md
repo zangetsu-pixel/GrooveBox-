@@ -149,3 +149,8 @@ Navigation is now Home, Library, Player, Sound, Settings.
 - [ ] **Settings** grouped into Appearance, Player and layout, Wallpapers, Fonts and text, Audio, Lyrics, Playback, Backup and about, each with an icon.
 - [ ] **Fonts:** every font is listed in its own typeface with a check mark. Custom font loader and a preview line are included.
 - [ ] New custom line icons for navigation and settings.
+
+## Update 3.10.1 (fix: effects engine without Safe mode)
+- [ ] With Safe mode off, if any part of the effects engine fails to start on your phone, the app now keeps playing sound normally instead of going silent. The Sound page status line says what failed, and a message shows the reason (send it to me if you see it).
+- [ ] The audio engine now resumes itself if Android pauses it, so music no longer stays silent until you toggle something.
+- [ ] Settings, About says "Version 3.10.1".

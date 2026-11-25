@@ -306,7 +306,8 @@ if(S.v3!=310){S.v3=310;S.bg='oled';S.vst=0;S.pn='Flat'}
 S.pr=S.pr||0;S.ld=S.ld||0;
 const save=()=>{try{localStorage.setItem('gb2',JSON.stringify(S))}catch(e){}};
 const fmt=s=>isFinite(s)?Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0'):'0:00';
-function init(){
+function init(){if(ctx)return;try{init0()}catch(e){N.dead=1;try{if(N.g1){N.g1.disconnect();N.g1.connect(ctx.destination)}if(N.g2){N.g2.disconnect();N.g2.connect(ctx.destination)}}catch(x){}const m='Effects failed on this phone, playing without them. Reason: '+e.message;engS(m);toast(m)}}
+function init0(){
  if(ctx)return;
  const AC=window.AudioContext||window.webkitAudioContext;try{ctx=new AC(Object.assign({latencyHint:'playback'},S.sr?{sampleRate:+S.sr}:{}))}catch(e){ctx=new AC()}
  const src=(N.g1=ctx.createGain(),N.g2=ctx.createGain(),ctx.createMediaElementSource(A1).connect(N.g1),ctx.createMediaElementSource(A2).connect(N.g2),N.g1);
@@ -348,7 +349,7 @@ function apply(){document.body.dataset.th=S.bg||'tint';{const bd=document.body,l
  document.querySelectorAll('[data-t]').forEach(b=>b.classList.toggle('on',b.dataset.t==S.th));
  document.documentElement.style.setProperty('--acc',accC());
  uiSync();
- if(!ctx)return;
+ if(!ctx||N.dead)return;
  const P=S.pure?0:1,mx=Math.max(0,...S.eq,S.bb,S.bm,S.bt,S.pr,S.ld*7,...(S.pq||[]).map(p=>p&&p.on?p.g:0));N.pre.gain.value=Math.pow(10,(S.pre-(S.hr&&!S.pure?mx*.5:0)+(S.rg?Math.min(0,RG):0))/20);N.eq.forEach(n=>n.Q.value=S.qw);N.b1.type='lowshelf';N.b1.frequency.value=S.bf;N.b1.gain.value=P*S.bb;N.b2.type='peaking';N.b2.frequency.value=1000;N.b2.Q.value=.7;N.b2.gain.value=P*S.bm;N.b3.type='highshelf';N.b3.frequency.value=8000;N.b3.gain.value=P*S.bt;N.bg.gain.value=P*S.bh;N.pq.forEach((n,i)=>{const p=(S.pq||[])[i];if(p&&p.on&&P){n.type=p.t;n.frequency.value=p.f;n.Q.value=p.q;n.gain.value=p.g}else{n.type='peaking';n.gain.value=0}});
  N.eq.forEach((n,k)=>n.gain.value=P*S.eq[k]);
  N.prs.gain.value=P*S.pr;N.ld1.gain.value=P*S.ld*7;N.ld2.gain.value=P*S.ld*4.5;N.mud.gain.value=S.mud&&P?-4:0;N.sib.gain.value=S.sib&&P?-3.5:0;
@@ -506,7 +507,7 @@ $('#seek').oninput=e=>{if(a.duration)a.currentTime=e.target.value/1000*a.duratio
 let stopAfter=0,stopCount=0,gt=0,nxt=-1,XF=null,XFg=0,tk=0,lsv=0;
 const other=()=>a===A1?A2:A1;
 const engS=t=>{const e=$('#eng');if(e)e.textContent=t};
-function engStart(){if(S.safe){engS('Safe mode is on. Effects, the equalizer and the visualizer are off.');return}try{init();ctx.resume();engS('Audio engine: on')}catch(e){engS('Audio engine failed: '+e.message);toast('Audio effects failed: '+e.message+'. Try Safe mode in Settings, Audio.')}}
+function engStart(){if(S.safe){engS('Safe mode is on. Effects, the equalizer and the visualizer are off.');return}try{init();ctx.resume().catch(()=>{});if(!N.dead)engS('Audio engine: on')}catch(e){engS('Audio engine failed: '+e.message);toast('Audio effects failed: '+e.message+'. Try Safe mode in Settings, Audio.')}}
 function tp(){if(S.fpp&&N.m){const n=ctx.currentTime;N.m.gain.cancelScheduledValues(0);if(a.paused){N.m.gain.setValueAtTime(0,n);a.play();N.m.gain.linearRampToValueAtTime(1,n+.35)}else{N.m.gain.setValueAtTime(N.m.gain.value,n);N.m.gain.linearRampToValueAtTime(0,n+.3);setTimeout(()=>{a.pause();N.m.gain.cancelScheduledValues(0);N.m.gain.value=1},320)}}else a.paused?a.play():a.pause()}
 function pick(){if(stopAfter||!q.length)return -1;if(rp==2)return i;if(sh&&q.length>1){let k;do{k=Math.floor(Math.random()*q.length)}while(k==i);return k}return i+1<q.length?i+1:rp==1?0:-1}
 function swap(fs){
@@ -807,7 +808,8 @@ for(const A of [A1,A2])A.addEventListener('timeupdate',e=>{if(e.target===a&&a.du
 addEventListener('resize',()=>{vzW=0});
 homeRender();
 
-$('#ver').textContent='Version 3.10';
+for(const A of [A1,A2])A.addEventListener('play',()=>{if(ctx&&ctx.state!='running')ctx.resume().catch(()=>{})});
+$('#ver').textContent='Version 3.10.1';
 drawLy();
 apply();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
