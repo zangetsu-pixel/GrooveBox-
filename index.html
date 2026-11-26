@@ -317,12 +317,12 @@ function init0(){
  N.eq=B.map((f,k)=>{const n=ctx.createBiquadFilter();n.type='peaking';n.frequency.value=f;n.Q.value=4.3;return n});
  N.mud=ctx.createBiquadFilter();N.mud.type='peaking';N.mud.frequency.value=300;N.mud.Q.value=1;
  N.sib=ctx.createBiquadFilter();N.sib.type='peaking';N.sib.frequency.value=7200;N.sib.Q.value=2;
- N.b1=ctx.createBiquadFilter();N.b2=ctx.createBiquadFilter();N.b3=ctx.createBiquadFilter();N.pq=Array.from({length:16},()=>ctx.createBiquadFilter());N.prs=ctx.createBiquadFilter();N.prs.type='peaking';N.prs.frequency.value=3200;N.prs.Q.value=.9;N.ld1=ctx.createBiquadFilter();N.ld1.type='lowshelf';N.ld1.frequency.value=110;N.ld2=ctx.createBiquadFilter();N.ld2.type='highshelf';N.ld2.frequency.value=9000;let n=src;[N.pre,N.b1,N.b2,N.b3,...N.eq,...N.pq,N.prs,N.ld1,N.ld2,N.mud,N.sib].forEach(x=>{n.connect(x);n=x});N.g2.connect(N.pre);
+ N.b1=ctx.createBiquadFilter();N.b2=ctx.createBiquadFilter();N.b3=ctx.createBiquadFilter();N.pq=Array.from({length:16},()=>ctx.createBiquadFilter());N.prs=ctx.createBiquadFilter();N.prs.type='peaking';N.prs.frequency.value=3200;N.prs.Q.value=.9;N.ld1=ctx.createBiquadFilter();N.ld1.type='lowshelf';N.ld1.frequency.value=110;N.ld2=ctx.createBiquadFilter();N.ld2.type='highshelf';N.ld2.frequency.value=9000;let n=src;N.ch=[N.pre,N.b1,N.b2,N.b3,...N.eq,...N.pq,N.prs,N.ld1,N.ld2,N.mud,N.sib];n=N.sib;
  const mix=ctx.createGain(),sh2=ctx.createWaveShaper(),cu=new Float32Array(1024);
  for(let k=0;k<1024;k++){const x=k/512-1;cu[k]=Math.tanh(2.5*x)+0.1*x*x}
  sh2.curve=cu;sh2.oversample='2x';N.dry=ctx.createGain();N.wet=ctx.createGain();
- n.connect(N.dry);N.dry.connect(mix);{const c2=new Float32Array(1024);for(let k=0;k<1024;k++)c2[k]=Math.tanh(3*(k/512-1));N.bl=ctx.createBiquadFilter();N.bl.type='lowpass';N.bl.frequency.value=140;const bs=ctx.createWaveShaper();bs.curve=c2;N.bg=ctx.createGain();N.bg.gain.value=0;n.connect(N.bl);N.bl.connect(bs);bs.connect(N.bg);N.bg.connect(mix)}n.connect(sh2);sh2.connect(N.wet);N.wet.connect(mix);
- const sp=ctx.createChannelSplitter(2),mg=ctx.createChannelMerger(2);N.x=[];N.d=[];N.k=[];
+ n.connect(N.dry);N.dry.connect(mix);{const c2=new Float32Array(1024);for(let k=0;k<1024;k++)c2[k]=Math.tanh(3*(k/512-1));N.bl=ctx.createBiquadFilter();N.bl.type='lowpass';N.bl.frequency.value=140;const bs=ctx.createWaveShaper();bs.curve=c2;N.bg=ctx.createGain();N.bg.gain.value=0;N.bs=bs;N.bl.connect(bs);bs.connect(N.bg);N.bg.connect(mix)}N.sh=sh2;N.nEnd=n;sh2.connect(N.wet);N.wet.connect(mix);
+ const sp=ctx.createChannelSplitter(2),mg=ctx.createChannelMerger(2);N.spl=sp;N.x=[];N.d=[];N.k=[];
  N.cv=ctx.createConvolver();N.cv.buffer=mkIR(S.rvs);N.rv=ctx.createGain();N.rv.gain.value=0;N.mixN=mix;N.cv.connect(N.rv);N.rv.connect(sp);mix.connect(sp);
  [0,1].forEach(c=>{
   const d=ctx.createGain();sp.connect(d,c);d.connect(mg,0,c);N.d.push(d);const sx=ctx.createGain();sx.gain.value=0;sp.connect(sx,c);sx.connect(mg,0,1-c);(N.sx=N.sx||[]).push(sx);
@@ -330,9 +330,9 @@ function init0(){
   const lp=ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=700;
   const dl=ctx.createDelay();dl.delayTime.value=0.0003;
   const x=ctx.createGain();x.gain.value=0;
-  sp.connect(lp,c);lp.connect(dl);dl.connect(x);x.connect(mg,0,1-c);N.x.push(x);
+  (N.lp=N.lp||[]).push(lp);lp.connect(dl);dl.connect(x);x.connect(mg,0,1-c);N.x.push(x);
  });
- N.pan=ctx.createStereoPanner();N.cp=ctx.createDynamicsCompressor();N.m=ctx.createGain();N.an=ctx.createAnalyser();N.an.fftSize=256;mg.connect(N.pan);N.pan.connect(N.cp);N.sg=ctx.createGain();N.sg.gain.value=0;N.sp2=[0,1].map(c=>{const p=ctx.createPanner();p.panningModel='HRTF';p.distanceModel='linear';sp.connect(p,c);p.connect(N.sg);return p});N.sg.connect(N.pan);N.cp.connect(N.m);N.lm=ctx.createDynamicsCompressor();N.lm.threshold.value=-2;N.lm.knee.value=0;N.lm.ratio.value=20;N.lm.attack.value=.002;N.lm.release.value=.12;N.an.smoothingTimeConstant=.7;N.m.connect(N.lm);N.lm.connect(N.an);N.an.connect(ctx.destination);
+ N.pan=ctx.createStereoPanner();N.cp=ctx.createDynamicsCompressor();N.m=ctx.createGain();N.an=ctx.createAnalyser();N.an.fftSize=256;N.ai=ctx.createAnalyser();N.ai.fftSize=256;mg.connect(N.pan);N.pan.connect(N.cp);N.sg=ctx.createGain();N.sg.gain.value=0;N.sp2=[0,1].map(c=>{const p=ctx.createPanner();p.panningModel='HRTF';p.distanceModel='linear';p.connect(N.sg);return p});N.sg.connect(N.pan);N.cp.connect(N.m);N.lm=ctx.createDynamicsCompressor();N.lm.threshold.value=-2;N.lm.knee.value=0;N.lm.ratio.value=20;N.lm.attack.value=.002;N.lm.release.value=.12;N.an.smoothingTimeConstant=.7;N.m.connect(N.lm);N.lm.connect(N.an);N.an.connect(ctx.destination);
  try{apply()}catch(e){engS('Audio engine on, settings error: '+e.message);toast('Effects settings error: '+e.message)}
  viz();
 }
@@ -358,6 +358,7 @@ function apply(){document.body.dataset.th=S.bg||'tint';{const bd=document.body,l
  N.dry.gain.value=S.warm&&P?0.6:1;N.wet.gain.value=S.warm&&P?0.5:0;
  N.d.forEach(d=>d.gain.value=S.kar||S.mono||S.spa?0:(1+S.w)/2);N.sx.forEach(x=>x.gain.value=S.kar||S.mono||S.spa?0:(1-S.w)/2);N.rv.gain.value=S.rvm;if(S.rvm>0&&!N.rvOn){N.mixN.connect(N.cv);N.rvOn=1}else if(!S.rvm&&N.rvOn){N.mixN.disconnect(N.cv);N.rvOn=0}N.k[0].gain.value=S.kar||S.mono?.5:0;N.k[1].gain.value=S.kar?-.5:S.mono?.5:0;N.sg.gain.value=S.spa?1:0;N.sp2.forEach((p,c)=>{p.positionX.value=c?S.spx:-S.spx;p.positionZ.value=-1.6});if(N.amk!==S.am+'|'+S.at){N.amk=S.am+'|'+S.at;amb()}if(N.ag)N.ag.gain.value=S.av;N.pan.pan.value=S.bal;N.cp.threshold.value=S.lim?S.ct:0;N.cp.knee.value=6;N.cp.ratio.value=S.lim?S.cr:1;
  N.x.forEach(x=>x.gain.value=S.cf&&!S.kar?0.35:0);
+ rewireEq();wire();
 }
 B.forEach((f,k)=>{const d=document.createElement('div');d.className='eb';
  d.innerHTML=`<input class="eqs" type="range" min="-12" max="12" step="0.5" value="0"><span>${BL[k]}</span>`;
@@ -509,7 +510,7 @@ $('#seek').oninput=e=>{if(a.duration)a.currentTime=e.target.value/1000*a.duratio
 let stopAfter=0,stopCount=0,gt=0,nxt=-1,XF=null,XFg=0,tk=0,lsv=0;
 const other=()=>a===A1?A2:A1;
 const engS=t=>{const e=$('#eng');if(e)e.textContent=t};
-function engStart(){if(!S.fx){engS('Basic playback. Turn on the equalizer in Sound to use effects.');return}try{init();ctx.resume().catch(()=>{});if(!N.dead)engS('Audio engine: on')}catch(e){engS('Audio engine failed: '+e.message);toast('Audio effects failed: '+e.message)}}
+function engStart(){if(!S.fx){engS('Basic playback. Turn on the equalizer in Sound to use effects.');return}try{init();ctx.resume().catch(()=>{});if(N.dead&&N.rescued)engS('Effects were switched off after the sound dropped out. Reopen the app to try again.');else if(!N.dead)engS('Audio engine: on')}catch(e){engS('Audio engine failed: '+e.message);toast('Audio effects failed: '+e.message)}}
 function tp(){if(S.fpp&&N.m){const n=ctx.currentTime;N.m.gain.cancelScheduledValues(0);if(a.paused){N.m.gain.setValueAtTime(0,n);a.play();N.m.gain.linearRampToValueAtTime(1,n+.35)}else{N.m.gain.setValueAtTime(N.m.gain.value,n);N.m.gain.linearRampToValueAtTime(0,n+.3);setTimeout(()=>{a.pause();N.m.gain.cancelScheduledValues(0);N.m.gain.value=1},320)}}else a.paused?a.play():a.pause()}
 function pick(){if(stopAfter||!q.length)return -1;if(rp==2)return i;if(sh&&q.length>1){let k;do{k=Math.floor(Math.random()*q.length)}while(k==i);return k}return i+1<q.length?i+1:rp==1?0:-1}
 function swap(fs){
@@ -654,7 +655,7 @@ function pqUI(){const e=$('#pqs');e.textContent='';(S.pq||[]).forEach((p,i)=>{co
   if(dn>=0){const p=S.pq[dn];p.f=Math.min(20000,Math.max(20,20*Math.pow(1000,(cx-12)/(e.width-24))));p.g=Math.round(Math.min(18,Math.max(-18,(e.height/2-cy)/(e.height/2-16)*18))*2)/2;apply();return}
   const k=Math.round(Math.min(30,Math.max(0,(cx-12)/(e.width-24)*30))),g=Math.round(Math.min(12,Math.max(-12,(e.height/2-cy)/(e.height/2-16)*12))*2)/2,dl=g-S.eq[k];
   [-3,-2,-1,0,1,2,3].forEach((o,j)=>{const t=k+o;if(t>=0&&t<31)S.eq[t]=Math.round(Math.max(-12,Math.min(12,S.eq[t]+dl*[.1,.3,.65,1,.65,.3,.1][j]))*2)/2});
-  if(N.eq)N.eq.forEach((n,t)=>n.gain.value=(S.pure?0:1)*S.eq[t]);calcResp();drawEq()};
+  if(N.eq)N.eq.forEach((n,t)=>n.gain.value=(S.pure?0:1)*S.eq[t]);rewireEq();calcResp();drawEq()};
  e.onpointerdown=ev=>{dr=1;e.setPointerCapture(ev.pointerId);const[cx,cy]=pos(ev);dn=-1;let bd=44;(S.pq||[]).forEach((p,i)=>{if(!p.on)return;const d=Math.hypot(fx(p.f)-cx,gy(p.g)-cy);if(d<bd){bd=d;dn=i}});mv(ev)};
  e.onpointermove=ev=>{if(dr)mv(ev)};e.onpointerup=e.onpointercancel=()=>{if(dr){dr=0;if(dn>=0)pqUI();dn=-1;apply();save()}};
 }
@@ -811,8 +812,29 @@ for(const A of [A1,A2])A.addEventListener('timeupdate',e=>{if(e.target===a&&a.du
 addEventListener('resize',()=>{vzW=0});
 homeRender();
 
+
+/* --- lean engine: only wire the parts that are in use --- */
+function rewireEq(){if(!ctx||N.dead||!N.ch)return;
+ const P=S.pure?0:1,act=N.ch.filter(n=>n===N.pre||n===N.sib||(n.type&&/^(lowpass|highpass|notch|bandpass)$/.test(n.type))||(n.gain&&n.gain.value!=0)),key=act.map(n=>N.ch.indexOf(n)).join(',');
+ if(N.key===key)return;N.key=key;
+ try{N.g1.disconnect();N.g2.disconnect();N.ch.forEach(n=>{if(n!==N.sib)n.disconnect()});
+  N.g1.connect(act[0]);N.g2.connect(act[0]);for(let k=0;k<act.length-1;k++)act[k].connect(act[k+1]);
+  N.g1.connect(N.ai);N.g2.connect(N.ai)}catch(e){N.dead=1;engS('Effects failed: '+e.message)}}
+function wire(){if(!ctx||N.dead||!N.spl)return;const W=N.W=N.W||{},P=S.pure?0:1;
+ const on=(k,v,a1,b1)=>{v=v?1:0;if(W[k]===v||(W[k]===undefined&&!v))return;W[k]=v;try{v?a1():b1()}catch(e){}};
+ on('wm',S.warm&&P,()=>N.nEnd.connect(N.sh),()=>N.nEnd.disconnect(N.sh));
+ on('bh',S.bh>0&&P,()=>N.nEnd.connect(N.bl),()=>N.nEnd.disconnect(N.bl));
+ on('sp',S.spa,()=>N.sp2.forEach((p,c)=>N.spl.connect(p,c)),()=>N.sp2.forEach((p,c)=>N.spl.disconnect(p,c)));
+ on('cf',S.cf&&!S.kar,()=>N.lp.forEach((l,c)=>N.spl.connect(l,c)),()=>N.lp.forEach((l,c)=>N.spl.disconnect(l,c)))}
+/* --- watchdog: if sound goes in but nothing comes out, drop the effects --- */
+let wdN=0;
+function rescue(msg){if(N.dead)return;N.dead=1;N.rescued=1;try{N.g1.disconnect();N.g2.disconnect();N.g1.connect(ctx.destination);N.g2.connect(ctx.destination);N.g1.connect(N.ai);N.g2.connect(N.ai)}catch(e){}S.fx=0;save();apply();engS(msg);toast(msg)}
+setInterval(()=>{if(!S.fx||!ctx||N.dead||!N.ai||a.paused||document.hidden)return;
+ if(ctx.state!='running'){ctx.resume().catch(()=>{});return}
+ const d1=new Uint8Array(256),d2=new Uint8Array(256),pk=d=>{let m=0;for(const v of d)m=Math.max(m,Math.abs(v-128));return m};N.ai.getByteTimeDomainData(d1);N.an.getByteTimeDomainData(d2);
+ if(pk(d1)>2&&pk(d2)===0){if(++wdN>=3)rescue('The equalizer made the sound drop out, so effects were switched off. Playback is basic now. Reopen the app to try again.')}else wdN=0},1000);
 for(const A of [A1,A2])A.addEventListener('play',()=>{if(ctx&&ctx.state!='running')ctx.resume().catch(()=>{})});
-$('#ver').textContent='Version 3.11';
+$('#ver').textContent='Version 3.12';
 drawLy();
 apply();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});

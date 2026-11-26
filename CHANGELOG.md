@@ -163,3 +163,9 @@ Navigation is now Home, Library, Player, Sound, Settings.
 - [ ] Without effects the seek bar still shows the waveform and progress. The live bouncing needs effects on.
 - [ ] Turning effects off after they started needs a reopen of the app (use Pure mode to bypass them right away).
 - [ ] Settings, About says "Version 3.11".
+
+## Update 3.12 (lean equalizer engine, self-rescue)
+- [ ] **Much lighter on your phone.** The effects engine used to run about 50 filters plus spatial, crossfeed, warmth and bass-harmonic processing all the time, even when switched off. Now only the parts you actually use are connected. A flat equalizer runs 2 filters instead of about 50, and Spatial, Crossfeed, Tube warmth and Deep bass cost nothing until you turn them on.
+- [ ] **Self-rescue:** if effects are on and music plays but nothing comes out, the app notices within about 3 seconds, switches effects off and keeps playing normally. The Sound page and a message explain it, and effects stay off the next time you open the app.
+- [ ] Turn on the equalizer switch in Sound, play something, and move a few bars and knobs. If anything still drops out or sounds wrong, note what you did right before it.
+- [ ] Settings, About says "Version 3.12".
