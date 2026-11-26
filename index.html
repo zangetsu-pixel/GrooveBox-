@@ -255,7 +255,7 @@ body[data-cs=square] #cv{border-radius:6px}body[data-cs=circle] #cv{border-radiu
 <div class="pre" id="prec"></div><select id="pst" hidden></select>
 <div class="card"><canvas id="eqc" width="680" height="240" role="img" aria-label="Equalizer curve. Drag to change the sound."></canvas><div class="bars" id="bars"></div><small style="display:block;text-align:center;padding:2px 0 10px">Drag a bar. The curve above shows the full result.</small></div>
 <div class="card"><b>Sound shaping</b><div class="knobs"><div class="kn" data-k="bb" data-min="-12" data-max="15" data-step="0.5" data-u=" dB" data-p="0" data-d="0"><input type="range" id="bb" min="-12" max="15" step="0.5" value="0"><div class="kl">Bass boost</div><span class="kv" id="bb_v"></span></div><div class="kn" data-k="bf" data-min="40" data-max="200" data-step="5" data-u=" Hz" data-p="0" data-d="90"><input type="range" id="bf" min="40" max="200" step="5" value="90"><div class="kl">Bass freq</div><span class="kv" id="bf_v"></span></div><div class="kn" data-k="bh" data-min="0" data-max="1.5" data-step="0.05" data-u="" data-p="1" data-d="0"><input type="range" id="bh" min="0" max="1.5" step="0.05" value="0"><div class="kl">Deep bass</div><span class="kv" id="bh_v"></span></div><div class="kn" data-k="bm" data-min="-12" data-max="12" data-step="0.5" data-u=" dB" data-p="0" data-d="0"><input type="range" id="bm" min="-12" max="12" step="0.5" value="0"><div class="kl">Mid</div><span class="kv" id="bm_v"></span></div><div class="kn" data-k="bt" data-min="-12" data-max="12" data-step="0.5" data-u=" dB" data-p="0" data-d="0"><input type="range" id="bt" min="-12" max="12" step="0.5" value="0"><div class="kl">Treble</div><span class="kv" id="bt_v"></span></div><div class="kn" data-k="pr" data-min="0" data-max="8" data-step="0.5" data-u=" dB" data-p="0" data-d="0"><input type="range" id="pr" min="0" max="8" step="0.5" value="0"><div class="kl">Presence</div><span class="kv" id="pr_v"></span></div><div class="kn" data-k="ld" data-min="0" data-max="1" data-step="0.05" data-u="" data-p="1" data-d="0"><input type="range" id="ld" min="0" max="1" step="0.05" value="0"><div class="kl">Loudness</div><span class="kv" id="ld_v"></span></div><div class="kn" data-k="sw" data-min="0" data-max="2" data-step="0.05" data-u="" data-p="1" data-d="1"><input type="range" id="sw" min="0" max="2" step="0.05" value="1"><div class="kl">Virtualizer</div><span class="kv" id="sw_v"></span></div><div class="kn" data-k="rvm" data-min="0" data-max="0.6" data-step="0.02" data-u="" data-p="1" data-d="0"><input type="range" id="rvm" min="0" max="0.6" step="0.02" value="0"><div class="kl">Reverb</div><span class="kv" id="rvm_v"></span></div><div class="kn" data-k="pre" data-min="-12" data-max="6" data-step="0.5" data-u=" dB" data-p="0" data-d="0"><input type="range" id="pre" min="-12" max="6" step="0.5" value="0"><div class="kl">Preamp</div><span class="kv" id="pre_v"></span></div></div><small style="display:block;text-align:center;padding:0 0 10px">Drag a knob up or down. Double tap to reset.</small></div>
-<div class="card"><b>Output</b><div class="profs" id="profs" style="margin:2px 0 12px"></div><select id="op" hidden><option>Speaker</option><option>Headphones</option><option>Bluetooth</option><option>Car</option></select></div>
+<div class="card"><b>Output</b><div class="profs" id="profs" style="margin:2px 0 12px"></div><select id="op" hidden><option>Speaker</option><option>Headphones</option><option>Bluetooth</option><option>Car</option></select><div class="row" style="margin:4px 0 4px"><button id="etest">Test audio engine</button></div><small id="etr" style="display:block;padding:4px 0 12px">Checks whether this phone can run effects. You will not hear anything.</small></div>
 <div class="card"><b>Presets</b><div class="row" style="margin:2px 0 12px"><button id="svc">Save custom</button><button id="ldc">Load custom</button><button id="rs">Reset all</button></div>
 <details><summary>Fine tune (31 bands and parametric)</summary>
 <div class="seg" style="margin-top:12px"><button data-et="graph" class="on">31 bands</button><button data-et="par">Parametric</button></div>
@@ -510,7 +510,9 @@ $('#seek').oninput=e=>{if(a.duration)a.currentTime=e.target.value/1000*a.duratio
 let stopAfter=0,stopCount=0,gt=0,nxt=-1,XF=null,XFg=0,tk=0,lsv=0;
 const other=()=>a===A1?A2:A1;
 const engS=t=>{const e=$('#eng');if(e)e.textContent=t};
-function engStart(){if(!S.fx){engS('Basic playback. Turn on the equalizer in Sound to use effects.');return}try{init();ctx.resume().catch(()=>{});if(N.dead&&N.rescued)engS('Effects were switched off after the sound dropped out. Reopen the app to try again.');else if(!N.dead)engS('Audio engine: on')}catch(e){engS('Audio engine failed: '+e.message);toast('Audio effects failed: '+e.message)}}
+function engStart(){if(!S.fx){engS('Basic playback. Turn on the equalizer in Sound to use effects.');return}
+ if(!N.ok){if(N.probing)return;N.probing=1;engS('Testing this phone\u2019s audio engine...');fxProbe().then(r=>{N.probing=0;if(r.ok){N.ok=1;engStart()}else{S.fx=0;save();apply();engS('Effects are not available on this phone, so playback stays basic. '+r.msg);toast('Effects are not available on this phone. '+r.msg)}});return}
+ try{init();ctx.resume().catch(()=>{});if(N.dead&&N.rescued)engS('Effects were switched off after the sound dropped out. Reopen the app to try again.');else if(!N.dead){N.t0=performance.now();N.ct0=a.currentTime;engS('Audio engine: on ('+ctx.sampleRate+' Hz)')}}catch(e){engS('Audio engine failed: '+e.message);toast('Audio effects failed: '+e.message)}}
 function tp(){if(S.fpp&&N.m){const n=ctx.currentTime;N.m.gain.cancelScheduledValues(0);if(a.paused){N.m.gain.setValueAtTime(0,n);a.play();N.m.gain.linearRampToValueAtTime(1,n+.35)}else{N.m.gain.setValueAtTime(N.m.gain.value,n);N.m.gain.linearRampToValueAtTime(0,n+.3);setTimeout(()=>{a.pause();N.m.gain.cancelScheduledValues(0);N.m.gain.value=1},320)}}else a.paused?a.play():a.pause()}
 function pick(){if(stopAfter||!q.length)return -1;if(rp==2)return i;if(sh&&q.length>1){let k;do{k=Math.floor(Math.random()*q.length)}while(k==i);return k}return i+1<q.length?i+1:rp==1?0:-1}
 function swap(fs){
@@ -695,7 +697,7 @@ document.querySelectorAll('[data-aw]').forEach(b=>b.onclick=()=>{S.aw=b.dataset.
 document.querySelectorAll('[data-gc]').forEach(b=>b.onclick=()=>{S.gc=b.dataset.gc;apply();save()});
 $('#awi').oninput=e=>{S.awi=+e.target.value;awm=null;apply();save()};$('#gi').oninput=e=>{S.gi=+e.target.value;apply();save()};
 ['wbw','ew'].forEach(k=>$('#'+k).addEventListener('click',()=>drawLy()));
-$('#safeoff').onclick=()=>{S.fx=1;S.pure=0;apply();save();engStart()};
+$('#safeoff').onclick=()=>enableFx();
 $('#lru').onclick=()=>{const t=$('#lrp').value;if(i>=0&&t.trim()){LYR[q[i].name]=t;saveL();setLy(t);toast('Lyrics saved for this song')}else toast('Play a song and paste lyrics first')};
 $('#lrx').onclick=()=>{if(i>=0){delete LYR[q[i].name];saveL();toast('Saved lyrics removed')}};
 function bkRender(){const e=$('#bkl');e.textContent='';if(!S.bkm.length)e.innerHTML='<small>No bookmarks yet.</small>';S.bkm.forEach((b,k)=>{const d=document.createElement('div'),t=document.createElement('div'),x=document.createElement('button'),f=LIB.find(y=>y.name==b.n);d.className='it';t.className='tx';t.innerHTML='<b></b><small></small>';t.firstChild.textContent=f?nm(f):b.n;t.lastChild.textContent=fmt(b.p);
@@ -799,12 +801,13 @@ function homeRender(){
 /* --- wiring --- */
 mkBars();mkKnobs();
 ['pr','ld'].forEach(k=>$('#'+k).oninput=e=>{S[k]=+e.target.value;apply();save()});
-$('#eqon').onclick=()=>{if(!S.fx){S.fx=1;S.pure=0;apply();save();engStart();return}S.pure=S.pure?0:1;apply();save()};
+$('#eqon').onclick=()=>{if(!S.fx){enableFx();return}S.pure=S.pure?0:1;apply();save()};
 $('#pst').addEventListener('change',e=>{S.pn=e.target.value;save()});$('#rs').addEventListener('click',()=>{S.pr=0;S.ld=0;S.pn='Flat';apply();save()});
 chipsFrom('#pst','#prec');chipsFrom('#op','#profs');fontPick('#uf','#fpu');fontPick('#lf','#fpl');
 $('#fprev').style.fontFamily=S.lf;
 $('#lff').addEventListener('change',()=>setTimeout(()=>{fontPick('#lf','#fpl');uiSync()},500));
-$('#fx').addEventListener('click',()=>{if(S.fx)engStart();else if(ctx)toast('Effects stay active until you reopen the app. Choose Pure mode to bypass them now.')});
+$('#fx').addEventListener('click',()=>{if(S.fx){S.fx=0;enableFx()}else if(ctx)toast('Effects stay active until you reopen the app. Choose Pure mode to bypass them now.')});
+$('#etest').onclick=async()=>{$('#etr').textContent='Testing...';const r=await fxProbe();$('#etr').textContent=(r.ok?'Passed: ':'Failed: ')+r.msg};
 $('#hadd').onclick=()=>$('#fd').click();$('#hadd2').onclick=()=>$('#f').click();
 $('#mpv').onclick=()=>$('#prev').click();$('#mnx').onclick=()=>$('#next').click();
 $('#mcv').onclick=$('#mtx').onclick=()=>pg('play');
@@ -813,6 +816,24 @@ addEventListener('resize',()=>{vzW=0});
 homeRender();
 
 
+
+/* --- engine probe: prove the phone can run effects before touching the song --- */
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function fxProbe(){
+ const AC=window.AudioContext||window.webkitAudioContext,rep=[];let c;
+ try{c=new AC(Object.assign({latencyHint:'playback'},S.sr?{sampleRate:+S.sr}:{}))}catch(e){try{c=new AC()}catch(e2){return{ok:false,msg:'The audio engine cannot start ('+e2.message+').',rep}}}
+ try{await c.resume()}catch(e){}
+ rep.push('engine '+c.state+', '+c.sampleRate+' Hz');
+ if(c.state!='running'){try{c.close()}catch(e){}return{ok:false,msg:'The audio engine stays '+c.state+'.',rep}}
+ const an=c.createAnalyser();an.fftSize=256;const mute=c.createGain();mute.gain.value=0;an.connect(mute);mute.connect(c.destination);
+ const pk=()=>{const d=new Uint8Array(256);an.getByteTimeDomainData(d);let m=0;for(const v of d)m=Math.max(m,Math.abs(v-128));return m};
+ let ok=true,url,el;
+ try{const o=c.createOscillator(),g=c.createGain();g.gain.value=.3;o.connect(g);g.connect(an);o.start();await sleep(300);const m=pk();o.stop();rep.push(m>3?'tone passes':'tone is silent');if(m<=3)ok=false}catch(e){rep.push('tone error: '+e.message);ok=false}
+ if(ok){try{const n=11025,b=new DataView(new ArrayBuffer(44+n*2)),w=(o,t)=>{for(let k=0;k<t.length;k++)b.setUint8(o+k,t.charCodeAt(k))};w(0,'RIFF');b.setUint32(4,36+n*2,true);w(8,'WAVEfmt ');b.setUint32(16,16,true);b.setUint16(20,1,true);b.setUint16(22,1,true);b.setUint32(24,11025,true);b.setUint32(28,22050,true);b.setUint16(32,2,true);b.setUint16(34,16,true);w(36,'data');b.setUint32(40,n*2,true);for(let k=0;k<n;k++)b.setInt16(44+k*2,Math.sin(k*.25)*9000,true);
+  url=URL.createObjectURL(new Blob([b],{type:'audio/wav'}));el=new Audio();el.src=url;el.loop=true;const ms=c.createMediaElementSource(el);ms.connect(an);await el.play();await sleep(500);const m=pk();rep.push(m>3?'song capture passes':'song capture is silent');if(m<=3)ok=false}catch(e){rep.push('song capture error: '+e.message);ok=false}}
+ try{if(el)el.pause();if(url)URL.revokeObjectURL(url);c.close()}catch(e){}
+ return{ok,msg:rep.join(', ')+'.',rep}}
+async function enableFx(){engS('Testing this phone\u2019s audio engine...');const r=await fxProbe();if(!r.ok){S.fx=0;save();apply();engS('Effects are not available on this phone, so playback stays basic. '+r.msg);toast('Effects are not available on this phone. '+r.msg);return}N.ok=1;S.fx=1;S.pure=0;apply();save();engStart()}
 /* --- lean engine: only wire the parts that are in use --- */
 function rewireEq(){if(!ctx||N.dead||!N.ch)return;
  const P=S.pure?0:1,act=N.ch.filter(n=>n===N.pre||n===N.sib||(n.type&&/^(lowpass|highpass|notch|bandpass)$/.test(n.type))||(n.gain&&n.gain.value!=0)),key=act.map(n=>N.ch.indexOf(n)).join(',');
@@ -827,14 +848,16 @@ function wire(){if(!ctx||N.dead||!N.spl)return;const W=N.W=N.W||{},P=S.pure?0:1;
  on('sp',S.spa,()=>N.sp2.forEach((p,c)=>N.spl.connect(p,c)),()=>N.sp2.forEach((p,c)=>N.spl.disconnect(p,c)));
  on('cf',S.cf&&!S.kar,()=>N.lp.forEach((l,c)=>N.spl.connect(l,c)),()=>N.lp.forEach((l,c)=>N.spl.disconnect(l,c)))}
 /* --- watchdog: if sound goes in but nothing comes out, drop the effects --- */
-let wdN=0;
+let wdN=0,wdS=0,wdT=-1;
 function rescue(msg){if(N.dead)return;N.dead=1;N.rescued=1;try{N.g1.disconnect();N.g2.disconnect();N.g1.connect(ctx.destination);N.g2.connect(ctx.destination);N.g1.connect(N.ai);N.g2.connect(N.ai)}catch(e){}S.fx=0;save();apply();engS(msg);toast(msg)}
 setInterval(()=>{if(!S.fx||!ctx||N.dead||!N.ai||a.paused||document.hidden)return;
  if(ctx.state!='running'){ctx.resume().catch(()=>{});return}
  const d1=new Uint8Array(256),d2=new Uint8Array(256),pk=d=>{let m=0;for(const v of d)m=Math.max(m,Math.abs(v-128));return m};N.ai.getByteTimeDomainData(d1);N.an.getByteTimeDomainData(d2);
- if(pk(d1)>2&&pk(d2)===0){if(++wdN>=3)rescue('The equalizer made the sound drop out, so effects were switched off. Playback is basic now. Reopen the app to try again.')}else wdN=0},1000);
+ if(pk(d1)>2&&pk(d2)===0){if(++wdN>=3)rescue('The equalizer made the sound drop out, so effects were switched off. Playback is basic now. Reopen the app to try again.')}else wdN=0;
+ const adv=Math.abs(a.currentTime-wdT)>.05;wdT=a.currentTime;const stuck=!adv&&!a.seeking&&a.readyState>=3&&!a.ended,quiet=pk(d1)===0&&pk(d2)===0&&a.currentTime-N.ct0>6;
+ if(performance.now()-N.t0<40000&&(stuck||quiet)){if(++wdS>=6){S.fx=0;save();toast('Effects silenced this phone, so they are off now. Reloading...');setTimeout(()=>location.reload(),1500)}}else wdS=0},1000);
 for(const A of [A1,A2])A.addEventListener('play',()=>{if(ctx&&ctx.state!='running')ctx.resume().catch(()=>{})});
-$('#ver').textContent='Version 3.12';
+$('#ver').textContent='Version 3.13';
 drawLy();
 apply();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});

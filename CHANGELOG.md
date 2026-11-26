@@ -169,3 +169,10 @@ Navigation is now Home, Library, Player, Sound, Settings.
 - [ ] **Self-rescue:** if effects are on and music plays but nothing comes out, the app notices within about 3 seconds, switches effects off and keeps playing normally. The Sound page and a message explain it, and effects stay off the next time you open the app.
 - [ ] Turn on the equalizer switch in Sound, play something, and move a few bars and knobs. If anything still drops out or sounds wrong, note what you did right before it.
 - [ ] Settings, About says "Version 3.12".
+
+## Update 3.13 (effects can no longer silence your music)
+- [ ] **Engine test first.** Turning the equalizer on now runs a quick inaudible test (a tone plus a short test sound captured the same way your songs are). Only if both pass do effects start. If your phone fails, effects stay off, music keeps playing, and a message says which step failed.
+- [ ] **Test audio engine** button on the Sound page (under Output) runs that same test any time and shows the result. If effects ever fail, tap it and send me the text it shows.
+- [ ] **Silent-song recovery:** if effects are on and the song is silent or frozen for about 6 seconds, the app switches effects off and reloads itself, so you are never left in silence.
+- [ ] Sound page status shows the audio engine sample rate when effects are on.
+- [ ] Settings, About says "Version 3.13".
